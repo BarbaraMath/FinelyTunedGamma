@@ -1,4 +1,3 @@
-%matplotlib inline
 import os
 import json
 from importlib import reload
@@ -10,3 +9,17 @@ import pandas as pd
 
 import mne
 from mne.time_frequency import tfr_morlet
+
+
+#os.getcwd() for finding current working directory
+os.chdir('')
+
+raw = mne.io.read_raw_fieldtrip()
+
+print(raw) #here you can see the n samples and the time
+print(raw.info) #ch_names, sfreq, nchan.
+n_time_samps = raw.n_times #nsamples
+time_secs = raw.times #timepoints
+raw.info.keys()
+ch_names = raw.ch_names
+n_chan = len(ch_names) 
