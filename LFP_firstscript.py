@@ -1,6 +1,8 @@
 import os
-import json
+from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 from importlib import reload
+
 
 from matplotlib import pyplot as plt
 from scipy.signal import spectrogram, hanning
@@ -9,7 +11,6 @@ import pandas as pd
 
 import mne
 from mne.time_frequency import tfr_morlet
-
 
 #os.getcwd() for finding current working directory
 os.chdir('')
@@ -23,3 +24,5 @@ time_secs = raw.times #timepoints
 raw.info.keys()
 ch_names = raw.ch_names
 n_chan = len(ch_names) 
+
+print('Hi')
