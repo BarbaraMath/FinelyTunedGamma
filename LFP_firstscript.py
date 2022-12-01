@@ -1,19 +1,18 @@
 import os
 import numpy as np
+import pandas as pd
 from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
-
-
-from matplotlib import pyplot as plt
-from scipy.signal import spectrogram, hanning
-
-import pandas as pd
-
+import scipy
 import mne
+
 from mne.time_frequency import tfr_morlet
 
 #os.getcwd() for finding current working directory
 os.chdir('')
+
+FileNames = pd.read_csv('OneDrive - Charité - Universitätsmedizin Berlin\FTG_PROJECT\ImportFiles.csv', sep=',', header=None)
+print(FileNames.values)
 
 raw = mne.io.read_raw_fieldtrip()
 
