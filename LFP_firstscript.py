@@ -1,12 +1,12 @@
 import os
+import numpy as np
 from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
-from importlib import reload
 
 
 from matplotlib import pyplot as plt
 from scipy.signal import spectrogram, hanning
-import numpy as np
+
 import pandas as pd
 
 import mne
@@ -25,4 +25,5 @@ raw.info.keys()
 ch_names = raw.ch_names
 n_chan = len(ch_names) 
 
-print('Hi')
+print('we made many changes')
+np.array([1,2,3])
