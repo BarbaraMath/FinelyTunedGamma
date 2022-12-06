@@ -106,5 +106,14 @@ fig = mne.viz.plot_events(events_from_annot, sfreq=raw.info['sfreq'],
                           first_samp=raw.first_samp, event_id=event_dict)
 fig.subplots_adjust(right=0.7)  # make room for legend
 
+epochs = mne.Epochs(raw, events_from_annot, event_id=event_dict,
+                    preload=True)
+
 raw.plot(events=events_from_annot, start=0, duration=180, color='gray',
          event_color={1: 'r', 2: 'g'})
+
+
+epochs.metadata
+epochs['ThresStim'].plot_psd(picks = 'LFP_R_13_STN', average=True)
+
+ecg_epochs = mne.preprocessing.create_ecg_epocs(raw)
