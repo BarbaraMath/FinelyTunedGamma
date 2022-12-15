@@ -87,15 +87,16 @@ for i, name in enumerate(chNamesList):
 # chNamesArr == ch_to_plot
 
 ######################## WORKING WITH EVENTS ########################
+d, t = raw[raw.ch_names.index('STIM_R_125Hz_60us'), :]
+plt.plot(d[0,:])
+plt.show()
 
-fig = raw.plot(start=1, duration=120)
+fig = raw.plot(start=1, duration=200)
 fig.fake_keypress('a')
-NoStim = mne.Annotations(onset=1, duration=11, description='NoStim')
-ThresStim = mne.Annotations(onset=161, duration=11, description='ThresStim')
 
-my_annot = mne.Annotations(onset=[1, 161],  # in seconds
-                           duration=[11, 11],  # in seconds, too
-                           description=['NoStim', 'ThresStim'])
+my_annot = mne.Annotations(onset=[1, 60, 90, 110, 140, 161, 182],  # in seconds
+                           duration=[5,5,5,5,5,5,5],  # in seconds, too
+                           description=['NoStim','STIM_1','STIM_2','STIM_3','STIM_4','STIM_5','ThresStim'])
 raw.set_annotations(my_annot)
 
 raw.annotations.save('saved-annotations.csv',overwrite=True)
@@ -104,16 +105,34 @@ events_from_annot, event_dict = mne.events_from_annotations(raw)
 
 fig = mne.viz.plot_events(events_from_annot, sfreq=raw.info['sfreq'],
                           first_samp=raw.first_samp, event_id=event_dict)
-fig.subplots_adjust(right=0.7)  # make room for legend
 
 epochs = mne.Epochs(raw, events_from_annot, event_id=event_dict,
                     preload=True)
 
-raw.plot(events=events_from_annot, start=0, duration=180, color='gray',
-         event_color={1: 'r', 2: 'g'})
+
+epochs['ThresStim'].plot_psd(picks = 'LFP_R_13_STN', average=False)
+
+epo_spectrum = epochs.compute_psd(method = 'multitaper', picks = 'LFP_R_13_STN')
+
+raw.compute_psd(picks = 'LFP_R_13_STN', method = 'welch').plot(picks = 'LFP_R_13_STN')
+
+psds, freqs = epo_spectrum.get_data(return_freqs=True, picks = 'LFP_R_13_STN')
+
+plt.plot(freqs[40:70], psds[0,0,40:70], label = 'NoStim')
+plt.plot(freqs[40:70], psds[6,0,40:70], label = 'ThresStim')
+plt.legend(['NoStim','ThresStim'])
+plt.show()
+
+for jk in np.arange(0,7):
+    #.plot(freqs[40:70], psds[jk,0,40:70])
+    epochs[jk].compute_psd(picks = 'LFP_R_13_STN').plot(picks = 'LFP_R_13_STN')
+
+plt.show()
 
 
-epochs.metadata
-epochs['ThresStim'].plot_psd(picks = 'LFP_R_13_STN', average=True)
+psd_fig = raw.plot_psd(picks='LFP_R_13_STN', fmin=2, fmax=40, n_fft=int(3 * raw.info['sfreq']),
+                           reject_by_annotation=True)
 
-ecg_epochs = mne.preprocessing.create_ecg_epocs(raw)
+epochs['STIM_1'].compute_psd(picks = 'LFP_R_13_STN', method = 'welch').plot(picks = 'LFP_R_13_STN')
+
+fft_res = fft(RSTN_dat)
