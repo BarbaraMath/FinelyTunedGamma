@@ -4,6 +4,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import scipy
 import mne
+import sys
 
 from mne.time_frequency import tfr_morlet
 from scipy.fft import fft, fftfreq
@@ -15,6 +16,14 @@ os.chdir('')
 
 raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\sub-20210630PSTN\
 _ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
+
+#for macbook at home
+raw = mne.io.read_raw_fieldtrip('Macintosh HD\\Users\\barbaramathiopoulou\\OneDrive - Charité - Universitätsmedizin Berlin\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\\
+    sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
+
+sys.path.insert(0,'Users/barbaramathiopoulou/OneDrive - Charité - Universitätsmedizin Berlin/OneDrive - Charité - Universitätsmedizin Berlin/FTG_PROJECT/Sub025')
+
+raw = mne.io.read_raw_fieldtrip('sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
 
 print(raw) #here you can see the n samples and the time
 print(raw.info) #ch_names, sfreq, nchan.
