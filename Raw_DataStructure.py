@@ -8,22 +8,23 @@ import sys
 
 from mne.time_frequency import tfr_morlet
 from scipy.fft import fft, fftfreq
-from scipy.signal import spectrogram
+from scipy.signal import spectrogram, hann, butter, filtfilt
 from scipy import signal
 
 os.getcwd() #for finding current working directory
-os.chdir('')
+sys.path.append('T:\\Dokumente\\PROJECTS\\DYSKINESIA_PROJECT\\FTG_GithubCode')
+
 
 raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\sub-20210630PSTN\
 _ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
 
 #for macbook at home
-raw = mne.io.read_raw_fieldtrip('Macintosh HD\\Users\\barbaramathiopoulou\\OneDrive - Charité - Universitätsmedizin Berlin\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\\
-    sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
+#raw = mne.io.read_raw_fieldtrip('Macintosh HD\\Users\\barbaramathiopoulou\\OneDrive - Charité - Universitätsmedizin Berlin\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\\
+#    sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
 
-sys.path.insert(0,'Users/barbaramathiopoulou/OneDrive - Charité - Universitätsmedizin Berlin/OneDrive - Charité - Universitätsmedizin Berlin/FTG_PROJECT/Sub025')
+#sys.path.insert(0,'Users/barbaramathiopoulou/OneDrive - Charité - Universitätsmedizin Berlin/OneDrive - Charité - Universitätsmedizin Berlin/FTG_PROJECT/Sub025')
 
-raw = mne.io.read_raw_fieldtrip('sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
+#raw = mne.io.read_raw_fieldtrip('sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
 
 print(raw) #here you can see the n samples and the time
 print(raw.info) #ch_names, sfreq, nchan.
@@ -145,3 +146,5 @@ psd_fig = raw.plot_psd(picks='LFP_R_13_STN', fmin=2, fmax=40, n_fft=int(3 * raw.
 epochs['STIM_1'].compute_psd(picks = 'LFP_R_13_STN', method = 'welch').plot(picks = 'LFP_R_13_STN')
 
 fft_res = fft(RSTN_dat)
+
+epochs['NoStim'].plot_psd(picks = 'LFP_R_13_STN', average = True)

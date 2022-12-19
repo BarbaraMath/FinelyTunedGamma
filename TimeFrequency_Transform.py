@@ -21,13 +21,21 @@ wav = mne.time_frequency.tfr_morlet(inst = epochs, freqs = np.arange(3,100), n_c
        return_itc=False, decim=int(raw.info['sfreq'] / 20), n_jobs=1, picks=1, average=False, output='power', verbose='INFO')
 
 
+#FILTERING FUNCTION
+lowcut = 100
+highcut = 3
+nyq = raw.info["sfreq"] / 2
+data = raw.get_data(picks=[0,1])
+filt_dat = data_filtering(lowcut, highcut, nyq, data)
 
-raw_filt = raw.filter(l_freq = 100, h_freq=2, picks=[0,1], method = 'fir')
+#FFT TRANSFORMATION
+x = filt_dat
+win_samp = 250
+noverlap = 0.25
+f, t, Sxx = fft_transform(x, win_samp, noverlap)
 
-f, t, Sxx = signal.spectrogram(x = raw.get_data(picks='LFP_R_13_STN'), fs = raw.info["sfreq"], window = hann(250, sym=False), noverlap = 0.25)
-
-plt.pcolormesh(t, f, Sxx[0,:,:])
-plt.ylim(5, 120)
+plt.pcolormesh(t, f, Sxx[1,:,:], shading = 'gouraud')
+plt.ylim(3, 100)
 plt.ylabel('Frequency [Hz]')
 plt.xlabel('Time [sec]')
 plt.title("Time frequency plot "+str(raw.ch_names[1]))
@@ -35,6 +43,12 @@ plt.show()
 
 
 plt.plot(np.arange(1,127), np.mean(Sxx[0,:,:],1))
-plt.xlim(10,100)
-plt.ylim(0,1)
+
+plt.specgram(x = data[1,:], Fs = 250, window = 250, noverlap = 0.25)
+
+plt.specgram(x = data[1,:], Fs = 250, noverlap = 0., cmap = 'viridis')
+plt.ylim(3,100)
+plt.ylabel('Frequency [Hz]')
+plt.xlabel('Time [sec]')
+plt.title(f"Time frequency plot {raw.ch_names[1]}")
 plt.show()
