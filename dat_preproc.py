@@ -22,10 +22,52 @@ def data_filtering(lowcut, highcut, nyq, data):
     return filt_dat #returns 2 x n_samples array
 
 
+#FFT Transformation and Spectrogram Plotting
 def fft_transform(x, win_samp, noverlap):
+        
+        # Input:
         #x = filt_dat
         #win_samp = window for fft in samples, e.g. 250 for 1 sec
         #noverlap e.g. 0.25 (for 25%)
-        f, t, Sxx = signal.spectrogram(x = x, fs = raw.info["sfreq"], window = hann(win_samp, sym=False), noverlap = noverlap)
-        return f, t, Sxx 
-        #Sxx.shape: n_chan x n_freqs x seconds (n_samples/fs)
+
+        fs = raw.info["sfreq"]
+        window = hann(win_samp, sym=False)
+        f, t, Sxx = signal.spectrogram(x = x, fs = fs, window = window, noverlap = noverlap)
+         
+        #Plot Spectrograms of both STNs
+        fig, axes = plt.subplots(1,2, figsize = (18,6))
+        fig.suptitle('FFT Transformations')
+
+        ax_c = 0
+        stim = 4
+        for kj in np.array([0,1]):
+                
+                ax2 = axes[kj].twinx() #make right axis linked to the left one
+
+                stim_data = (raw.get_data(picks = stim)[0,:]/3) #define stim channel
+                axes[ax_c].specgram(x = x[kj,:], Fs = fs, noverlap = noverlap, cmap = 'viridis',
+                        vmin = -25, vmax = 10)
+                axes[ax_c].set_ylim(bottom = 3,top = 100)
+                
+                #Plot stim channel on top
+                ax2.plot(raw.times, stim_data, 'w', linewidth = 1.5)
+                ax2.set_yticks(np.arange(0,4.5,0.5))
+
+                #Right y axis label only for second plot to avoid crowd
+                if kj == 1:
+                        ax2.set_ylabel('Stimulation Amplitude [mA]')
+                
+                axes[ax_c].set_ylabel('Frequency [Hz]')
+                axes[ax_c].set_xlabel('Time [sec]')
+                axes[ax_c].set_title(raw.ch_names[kj])
+
+                ax_c += 1
+                stim += 1
+
+        
+        plt.show(block = False)
+
+        return f, t, Sxx
+        return fig
+
+#Epoching and PS Plotting

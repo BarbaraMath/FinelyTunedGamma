@@ -28,27 +28,9 @@ nyq = raw.info["sfreq"] / 2
 data = raw.get_data(picks=[0,1])
 filt_dat = data_filtering(lowcut, highcut, nyq, data)
 
-#FFT TRANSFORMATION
+#FFT TRANSFORMATION & PLOTTING
 x = filt_dat
 win_samp = 250
 noverlap = 0.25
 f, t, Sxx = fft_transform(x, win_samp, noverlap)
 
-plt.pcolormesh(t, f, Sxx[1,:,:], shading = 'gouraud')
-plt.ylim(3, 100)
-plt.ylabel('Frequency [Hz]')
-plt.xlabel('Time [sec]')
-plt.title("Time frequency plot "+str(raw.ch_names[1]))
-plt.show()
-
-
-plt.plot(np.arange(1,127), np.mean(Sxx[0,:,:],1))
-
-plt.specgram(x = data[1,:], Fs = 250, window = 250, noverlap = 0.25)
-
-plt.specgram(x = data[1,:], Fs = 250, noverlap = 0., cmap = 'viridis')
-plt.ylim(3,100)
-plt.ylabel('Frequency [Hz]')
-plt.xlabel('Time [sec]')
-plt.title(f"Time frequency plot {raw.ch_names[1]}")
-plt.show()
