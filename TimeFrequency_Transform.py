@@ -34,3 +34,6 @@ win_samp = 250
 noverlap = 0.25
 f, t, Sxx = fft_transform(x, win_samp, noverlap)
 
+#EPOCH AND PLOT 
+
+

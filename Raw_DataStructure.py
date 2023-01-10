@@ -134,9 +134,8 @@ plt.show()
 
 for jk in np.arange(0,7):
     #.plot(freqs[40:70], psds[jk,0,40:70])
-    epochs[jk].compute_psd(picks = 'LFP_R_13_STN').plot(picks = 'LFP_R_13_STN')
-
-plt.show()
+    #epochs[jk].compute_psd(picks = 'LFP_R_13_STN').plot(picks = 'LFP_R_13_STN')
+    epochs[jk].plot_psd(picks = 'LFP_R_13_STN', show = True)
 
 
 psd_fig = raw.plot_psd(picks='LFP_R_13_STN', fmin=2, fmax=40, n_fft=int(3 * raw.info['sfreq']),
