@@ -34,6 +34,31 @@ win_samp = 250
 noverlap = 0.25
 f, t, Sxx = fft_transform(x, win_samp, noverlap)
 
-#EPOCH AND PLOT 
+#EPOCH AND PLOT
 
 
+
+time_onsets = np.array([1, 140, 182])
+
+
+for jk in np.arange(0,3):
+       this_onset = time_onsets[jk]
+       this_offset = this_onset + 5
+       
+       plt.plot(np.mean(Sxx[1,:,this_onset:this_offset],1))
+       plt.xlim([5,35])
+       plt.ylim([0,4])
+
+plt.show()
+
+f, Pxx_den = signal.periodogram(Sxx[0,:,:],250)
+
+mean_dat = np.mean(Sxx[1,:,:],1)
+
+mean_dat = Sxx[1,:,:]
+total_sum = np.sum(mean_dat)
+
+norm_dat = (mean_dat/total_sum)*100
+plt.plot(norm_dat[0])
+plt.xlim([5,35])
+plt.show()
