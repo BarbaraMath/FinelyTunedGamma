@@ -21,44 +21,35 @@ wav = mne.time_frequency.tfr_morlet(inst = epochs, freqs = np.arange(3,100), n_c
        return_itc=False, decim=int(raw.info['sfreq'] / 20), n_jobs=1, picks=1, average=False, output='power', verbose='INFO')
 
 
-#FILTERING FUNCTION
-lowcut = 100
-highcut = 3
-nyq = raw.info["sfreq"] / 2
+#New filtering
+filter_order = 5 
+frequency_cutoff_low = 5 
+frequency_cutoff_high = 100 
+fs = raw.info['sfreq'] # sample frequency: 250 Hz
+# create the filter
+b, a = scipy.signal.butter(filter_order, (frequency_cutoff_low, frequency_cutoff_high), btype='bandpass', output='ba', fs=fs)
 data = raw.get_data(picks=[0,1])
-filt_dat = data_filtering(lowcut, highcut, nyq, data)
+filt_dat = scipy.signal.filtfilt(b, a, data) # .get_data()
 
 #FFT TRANSFORMATION & PLOTTING
 x = filt_dat
 win_samp = 250
-noverlap = 0.25
+noverlap = 0.5
 f, t, Sxx = fft_transform(x, win_samp, noverlap)
 
 #EPOCH AND PLOT
+time_onsets = {'No_Stim': 1,
+              'Clinical': 455,
+              'Threshold': 520}
+window = 250
+noverlap = 0.5*250
+
+ps = epoch_PS(filt_dat, time_onsets, window, noverlap)
 
 
-
-time_onsets = np.array([1, 140, 182])
-
-
-for jk in np.arange(0,3):
-       this_onset = time_onsets[jk]
-       this_offset = this_onset + 5
-       
-       plt.plot(np.mean(Sxx[1,:,this_onset:this_offset],1))
-       plt.xlim([5,35])
-       plt.ylim([0,4])
-
-plt.show()
-
-f, Pxx_den = signal.periodogram(Sxx[0,:,:],250)
-
-mean_dat = np.mean(Sxx[1,:,:],1)
-
-mean_dat = Sxx[1,:,:]
-total_sum = np.sum(mean_dat)
-
-norm_dat = (mean_dat/total_sum)*100
-plt.plot(norm_dat[0])
+ff, Pxx = scipy.signal.welch(filt_dat[1], 250)
+plt.plot(ff, Pxx)
 plt.xlim([5,35])
 plt.show()
+
+

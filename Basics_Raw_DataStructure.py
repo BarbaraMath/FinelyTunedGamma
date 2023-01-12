@@ -15,11 +15,11 @@ os.getcwd() #for finding current working directory
 sys.path.append('T:\\Dokumente\\PROJECTS\\DYSKINESIA_PROJECT\\FTG_GithubCode')
 
 
-raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\sub-20210630PSTN\
-_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
-
+raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628065100.mat',
+    info = None)
 #for macbook at home
-raw = mne.io.read_raw_fieldtrip('/Users/barbaramathiopoulou/OneDrive - Charité - Universitätsmedizin Berlin/OneDrive - Charité - Universitätsmedizin Berlin/FTG_PROJECT/Sub025/sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
+#raw = mne.io.read_raw_fieldtrip('Macintosh HD\\Users\\barbaramathiopoulou\\OneDrive - Charité - Universitätsmedizin Berlin\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\\
+#    sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
 
 #sys.path.insert(0,'Users/barbaramathiopoulou/OneDrive - Charité - Universitätsmedizin Berlin/OneDrive - Charité - Universitätsmedizin Berlin/FTG_PROJECT/Sub025')
 
@@ -98,10 +98,14 @@ for i, name in enumerate(chNamesList):
 ######################## WORKING WITH EVENTS ########################
 d, t = raw[raw.ch_names.index('STIM_R_125Hz_60us'), :]
 plt.plot(d[0,:])
-plt.show()
+plt.show(block = False)
 
-fig = raw.plot(start=1, duration=200)
+fig = raw.plot(start=0, duration=200, scalings = 100)
 fig.fake_keypress('a')
+
+plt.plot(raw.times, raw.get_data(picks = 5)[0])
+plt.show(block = False)
+
 
 my_annot = mne.Annotations(onset=[1, 60, 90, 110, 140, 161, 182],  # in seconds
                            duration=[5,5,5,5,5,5,5],  # in seconds, too
@@ -134,8 +138,9 @@ plt.show()
 
 for jk in np.arange(0,7):
     #.plot(freqs[40:70], psds[jk,0,40:70])
-    #epochs[jk].compute_psd(picks = 'LFP_R_13_STN').plot(picks = 'LFP_R_13_STN')
-    epochs[jk].plot_psd(picks = 'LFP_R_13_STN', show = True)
+    epochs[jk].compute_psd(picks = 'LFP_R_13_STN').plot(picks = 'LFP_R_13_STN')
+
+plt.show()
 
 
 psd_fig = raw.plot_psd(picks='LFP_R_13_STN', fmin=2, fmax=40, n_fft=int(3 * raw.info['sfreq']),

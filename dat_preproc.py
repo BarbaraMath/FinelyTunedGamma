@@ -47,7 +47,7 @@ def fft_transform(x, win_samp, noverlap):
                 stim_data = (raw.get_data(picks = stim)[0,:]/3) #define stim channel
                 axes[ax_c].specgram(x = x[kj,:], Fs = fs, noverlap = noverlap, cmap = 'viridis',
                         vmin = -25, vmax = 10)
-                axes[ax_c].set_ylim(bottom = 3,top = 100)
+                axes[ax_c].set_ylim(bottom = 5,top = 100)
                 
                 #Plot stim channel on top
                 ax2.plot(raw.times, stim_data, 'w', linewidth = 1.5)
@@ -70,4 +70,29 @@ def fft_transform(x, win_samp, noverlap):
         return f, t, Sxx
         return fig
 
-#Epoching and PS Plotting
+#PS Plotting of epochs in no stim/clinical/threshold
+def epoch_PS(filt_dat, time_onsets, window, noverlap):
+
+        ps = np.empty([len(time_onsets),126])
+
+        for key, value in time_onsets.items():
+                this_onset = value*250
+                this_offset = this_onset + (5*250)
+                
+                #window = hann(250, sym=False)
+
+                ff, Pxx = scipy.signal.welch(filt_dat[1,this_onset:this_offset], fs = 250, 
+                        nperseg = window, noverlap = noverlap)
+                plt.plot(ff, Pxx, label = key)
+
+                #ps1 = ps.append(ps, Pxx)
+        plt.xlim([5,40])
+
+        plt.xlabel('Frequency [Hz]')
+        plt.ylabel('PSD [V^2/Hz]')
+        plt.legend()
+        plt.show(block = False)
+
+        return ps
+        return fig
+
