@@ -35,21 +35,16 @@ filt_dat = scipy.signal.filtfilt(b, a, data) # .get_data()
 x = filt_dat
 win_samp = 250
 noverlap = 0.5
-f, t, Sxx = fft_transform(x, win_samp, noverlap)
+f, t, Sxx, fig = fft_transform(x, win_samp, noverlap)
+
+fig.savefig('Sub021_RampUpThres.pdf')
 
 #EPOCH AND PLOT
 time_onsets = {'No_Stim': 1,
-              'Clinical': 455,
-              'Threshold': 520}
+              'Clinical': 571,
+              'Threshold': 700}
 window = 250
 noverlap = 0.5*250
-
-ps = epoch_PS(filt_dat, time_onsets, window, noverlap)
-
-
-ff, Pxx = scipy.signal.welch(filt_dat[1], 250)
-plt.plot(ff, Pxx)
-plt.xlim([5,35])
-plt.show()
-
+side = 1
+ps = epoch_PS(filt_dat, time_onsets, window, noverlap, side)
 

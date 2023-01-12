@@ -69,22 +69,29 @@ def fft_transform(x, win_samp, noverlap):
 
         return f, t, Sxx
         return fig
+        
 
 #PS Plotting of epochs in no stim/clinical/threshold
-def epoch_PS(filt_dat, time_onsets, window, noverlap):
+def epoch_PS(filt_dat, time_onsets, window, noverlap, side):
 
         ps = np.empty([len(time_onsets),126])
 
         for key, value in time_onsets.items():
                 this_onset = value*250
-                this_offset = this_onset + (5*250)
+                this_offset = this_onset + (10*250)
                 
                 #window = hann(250, sym=False)
 
-                ff, Pxx = scipy.signal.welch(filt_dat[1,this_onset:this_offset], fs = 250, 
+                ff, Pxx = scipy.signal.welch(filt_dat[side,this_onset:this_offset], fs = 250, 
                         nperseg = window, noverlap = noverlap)
+                
+                #xnew = np.linspace(ff.min(), ff.max(), 50)
+                #spl = make_interp_spline(ff, Pxx, k = 3)
+                #y_smooth = spl(xnew)
+                
+                
+                #plt.plot(xnew, y_smooth, label = key)
                 plt.plot(ff, Pxx, label = key)
-
                 #ps1 = ps.append(ps, Pxx)
         plt.xlim([5,40])
 
@@ -94,5 +101,6 @@ def epoch_PS(filt_dat, time_onsets, window, noverlap):
         plt.show(block = False)
 
         return ps
-        return fig
+
+
 
