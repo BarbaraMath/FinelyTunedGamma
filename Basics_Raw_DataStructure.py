@@ -9,13 +9,14 @@ import sys
 from mne.time_frequency import tfr_morlet
 from scipy.fft import fft, fftfreq
 from scipy.signal import spectrogram, hann, butter, filtfilt
-from scipy import signal
+from scipy import signal, interpolate
+from scipy.interpolate import make_interp_spline, BSpline
 
 os.getcwd() #for finding current working directory
 sys.path.append('T:\\Dokumente\\PROJECTS\\DYSKINESIA_PROJECT\\FTG_GithubCode')
 
 
-raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628065100.mat',
+raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub033\\sub-20210902PSTN_ses-2022041211000080_run-BrainSense20220902120700.mat',
     info = None)
 #for macbook at home
 #raw = mne.io.read_raw_fieldtrip('Macintosh HD\\Users\\barbaramathiopoulou\\OneDrive - Charité - Universitätsmedizin Berlin\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\\
@@ -51,60 +52,13 @@ LSTN_dat = raw.get_data(picks = 'LFP_L_13_STN')
 #ax.plot(mydat)
 #plt.show()
 
-#Make some nice plots of the data
-
-chNamesList = raw.info['ch_names']
-chNamesArr = np.array(chNamesList)
-
-#channels to plot:
-chs_to_plot = [ 
-    'LFP_R_13_PEAK76Hz_THR20-30_AVG1000ms',
-    'LFP_R_13_STN',
-    'STIM_R_125Hz_60us'
-]
-
-xticks = np.linspace(0, time_secs[-1], 5) #make 5 x-axis ticks, dividing the seconds by 5
-
-fig, axes = plt.subplots(
-    1, len(chs_to_plot), figsize=(18, 6)
-) #define n of subplots and size
-
-# axes = axes.flatten()
-ax_c = 0
-
-for i, name in enumerate(chNamesList):
-    
-    if name in chs_to_plot:
-
-        if name[-3:] == 'STN':
-            axes[ax_c].psd(raw_data[i, :])
-            axes[ax_c].set_title(
-                f'PSD {name}',
-                fontsize=16, color='r'
-            )
-
-        else:
-            
-            axes[ax_c].plot(time_secs, raw_data[i, :])
-            axes[ax_c].set_title(name, fontsize=16, color='r')
-            axes[ax_c].set_xticks(xticks)
-            axes[ax_c].set_xticklabels(np.around(xticks / 60, 1))
-                
-        ax_c += 1
-
-        
-# chNamesArr == ch_to_plot
-
 ######################## WORKING WITH EVENTS ########################
 d, t = raw[raw.ch_names.index('STIM_R_125Hz_60us'), :]
 plt.plot(d[0,:])
 plt.show(block = False)
 
-fig = raw.plot(start=0, duration=200, scalings = 100)
-fig.fake_keypress('a')
-
-plt.plot(raw.times, raw.get_data(picks = 5)[0])
-plt.show(block = False)
+#plt.plot(raw.times, raw.get_data(picks = 5)[0])
+#plt.show(block = False)
 
 
 my_annot = mne.Annotations(onset=[1, 60, 90, 110, 140, 161, 182],  # in seconds
