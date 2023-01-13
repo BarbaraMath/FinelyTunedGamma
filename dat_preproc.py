@@ -68,7 +68,7 @@ def fft_transform(x, win_samp, noverlap):
         plt.show(block = False)
 
         return f, t, Sxx
-        return fig
+
         
 
 #PS Plotting of epochs in no stim/clinical/threshold

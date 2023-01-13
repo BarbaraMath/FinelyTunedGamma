@@ -2,11 +2,14 @@ import os
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+from matplotlib import colors
+from matplotlib.patches import Rectangle
 import scipy
 import mne
 import sys
 
 from mne.time_frequency import tfr_morlet
+from mne.baseline import rescale
 from scipy.fft import fft, fftfreq
 from scipy.signal import spectrogram, hann, butter, filtfilt
 from scipy import signal, interpolate
@@ -16,8 +19,7 @@ os.getcwd() #for finding current working directory
 sys.path.append('T:\\Dokumente\\PROJECTS\\DYSKINESIA_PROJECT\\FTG_GithubCode')
 
 
-raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub033\\sub-20210902PSTN_ses-2022041211000080_run-BrainSense20220902120700.mat',
-    info = None)
+raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\RampUpThres\\sub-021_ses-2022082612233578_run-BrainSense20220826125900.mat', info = None)
 #for macbook at home
 #raw = mne.io.read_raw_fieldtrip('Macintosh HD\\Users\\barbaramathiopoulou\\OneDrive - Charité - Universitätsmedizin Berlin\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\\
 #    sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
@@ -44,9 +46,10 @@ plt.legend(lines, channel_names)
 plt.show()
 
 
+
 raw_data = raw.get_data()
 print(raw_data.shape)
-RSTN_dat = raw.get_data(picks='LFP_R_13_STN')
+RSTN_dat = raw.get_data(picks='LFP_Stn_R_02')
 LSTN_dat = raw.get_data(picks = 'LFP_L_13_STN')
 #fig, ax = plt.subplots(figsize=[15, 5])
 #ax.plot(mydat)

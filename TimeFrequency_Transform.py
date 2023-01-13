@@ -21,7 +21,7 @@ wav = mne.time_frequency.tfr_morlet(inst = epochs, freqs = np.arange(3,100), n_c
        return_itc=False, decim=int(raw.info['sfreq'] / 20), n_jobs=1, picks=1, average=False, output='power', verbose='INFO')
 
 
-#New filtering
+#FILTERING
 filter_order = 5 
 frequency_cutoff_low = 5 
 frequency_cutoff_high = 100 
@@ -35,16 +35,20 @@ filt_dat = scipy.signal.filtfilt(b, a, data) # .get_data()
 x = filt_dat
 win_samp = 250
 noverlap = 0.5
-f, t, Sxx, fig = fft_transform(x, win_samp, noverlap)
-
-fig.savefig('Sub021_RampUpThres.pdf')
+f, t, Sxx = fft_transform(x, win_samp, noverlap)
 
 #EPOCH AND PLOT
 time_onsets = {'No_Stim': 1,
-              'Clinical': 571,
-              'Threshold': 700}
+              'Clinical': 102,
+              'Threshold': 145}
 window = 250
 noverlap = 0.5*250
 side = 1
 ps = epoch_PS(filt_dat, time_onsets, window, noverlap, side)
 
+#BASELINE CORRECTION WITHIN SAME RECORDING
+data = Sxx[1]
+t = t
+baseline = (1,100)
+stim_ch = 5
+bs_data = baseline_corr(data, t, baseline, stim_ch)
