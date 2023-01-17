@@ -1,6 +1,6 @@
 ####### BASELINE CORRECTION #######
 
-def baseline_corr(data, t, baseline, stim_ch):
+def baseline_corr(data, t, baseline, stim_ch, new_bcfname):
     bs_data = mne.baseline.rescale(data = data, times = t, baseline = baseline, mode = 'zlogratio')
 
     fig, ax = plt.subplots(1,1,figsize = (7,7))
@@ -23,4 +23,6 @@ def baseline_corr(data, t, baseline, stim_ch):
     
     plt.show(block = False)
 
+    np.save(new_bcfname + '.npy', bs_data)
+    plt.savefig(new_bcfname + '.pdf')
     return bs_data

@@ -23,7 +23,7 @@ def data_filtering(lowcut, highcut, nyq, data):
 
 
 #FFT Transformation and Spectrogram Plotting
-def fft_transform(x, win_samp, noverlap):
+def fft_transform(raw, x, win_samp, noverlap, new_fname):
         
         # Input:
         #x = filt_dat
@@ -67,6 +67,7 @@ def fft_transform(x, win_samp, noverlap):
         
         plt.show(block = False)
 
+        np.save(new_fname, Sxx)
         return f, t, Sxx
 
         
