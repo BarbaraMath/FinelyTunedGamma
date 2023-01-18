@@ -1,26 +1,33 @@
 #### CLEAR RECORDING FROM ARTEFACTS AND NORMALIZE ####
 
-raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub021\\sub-20210511PStn_ses-2022082612233578_run-BrainSense20220826125900.mat', info = None)
+raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub021\\sub-20210511PStn_ses-2022082612233578_run-BrainSense20220826011800.mat', info = None)
 
-fig = raw.plot(n_channels = 2, highpass = 5, lowpass = 100, filtorder = 5, duration = 20)
+fig = raw2.plot(n_channels = 2, highpass = 5, lowpass = 100, filtorder = 5, duration = 20)
 fig.fake_keypress('a')
 
 #First time making them
-interactive_annot = raw.annotations
-raw.annotations.save('Sub021_RampUpThres_artefactsAnnotations.csv', overwrite = True)
+interactive_annot = raw2.annotations
+raw2.annotations.save('Sub021_Freq110Hz_artefactsAnnotations.csv', overwrite = True)
 
-#Second time importing them
-annot_from_file = mne.read_annotations('Sub021_RampUpThres_artefactsAnnotations.csv')
+#Importing them later
+annot_from_file = pd.read_csv('Sub021_Freq110Hz_artefactsAnnotations.csv')
+new_onsets = fix_annot_onsets(annot_from_file)
+print(new_onsets)
 
-my_annot = mne.Annotations(onset=annot_from_file.onset,  # in seconds
+my_annot = mne.Annotations(onset=new_onsets,  # in seconds
                            duration=annot_from_file.duration,  # in seconds, too
-                           description=annot_from_file.description)
+                           description=annot_from_file.description,
+                           orig_time=raw.info['meas_date'])
 
 raw2 = raw.copy().set_annotations(my_annot)
+Draw = raw2.get_data(reject_by_annotation = 'omit')
+info = raw.info
+new_raw = mne.io.RawArray(Draw, info)
+new_raw.plot(n_channels = 2, highpass = 5, lowpass = 100, filtorder = 5, duration = 20)
 
-trial_cropped = raw.crop_by_annotations(interactive_annot)
+new_raw.save('Rej_sub-20210511PStn_ses-2022082612233578_run-BrainSense20220826011800.fif')
 
-Draw = raw.get_data(reject_by_annotation = 'omit')
+new_raw = mne.io.read_raw_fif('Rej_sub-20210511PStn_ses-2022082612233578_run-BrainSense20220826011800.fif')
 
 #FILTERING
 filter_order = 5 
@@ -29,7 +36,7 @@ frequency_cutoff_high = 100
 fs = raw.info['sfreq'] # sample frequency: 250 Hz
 # create the filter
 b, a = scipy.signal.butter(filter_order, (frequency_cutoff_low, frequency_cutoff_high), btype='bandpass', output='ba', fs=fs)
-data = Draw[0:2,:]
+data = new_raw.get_data(picks = (0,1))
 filt_dat = scipy.signal.filtfilt(b, a, data) # .get_data()
 
 #FFT TRANSFORMATION & PLOTTING
@@ -40,4 +47,7 @@ window = hann(win_samp, sym=False)
 f, t, Sxx = signal.spectrogram(x = x, fs = fs, window = window, noverlap = noverlap)
 plt.specgram(x = x[1,:], Fs = fs, noverlap = noverlap, cmap = 'viridis',
                         vmin = -25, vmax = 10)
+plt.ylim(5, 100)
 plt.show(block = False)
+
+np.save('FFT_sub-021_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01.npy', Sxx)

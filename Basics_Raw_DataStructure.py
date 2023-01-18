@@ -14,10 +14,12 @@ from scipy.fft import fft, fftfreq
 from scipy.signal import spectrogram, hann, butter, filtfilt
 from scipy import signal, interpolate
 from scipy.interpolate import make_interp_spline, BSpline
+from datetime import datetime
 
 os.getcwd() #for finding current working directory
-sys.path.append('T:\\Dokumente\\PROJECTS\\DYSKINESIA_PROJECT\\FTG_GithubCode')
+sys.path.append('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\RampUpThres')
 
+sys.modules[__name__].__dict__.clear()
 
 raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\RampUpThres\\sub-021_ses-2022082612233578_run-BrainSense20220826125900.mat', info = None)
 #for macbook at home
