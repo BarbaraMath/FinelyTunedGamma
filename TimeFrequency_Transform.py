@@ -25,52 +25,85 @@ wav = mne.time_frequency.tfr_morlet(inst = epochs, freqs = np.arange(3,100), n_c
 filter_order = 5 
 frequency_cutoff_low = 5 
 frequency_cutoff_high = 100 
-fs = raw.info['sfreq'] # sample frequency: 250 Hz
+fs = new_raw.info['sfreq'] # sample frequency: 250 Hz
 # create the filter
 b, a = scipy.signal.butter(filter_order, (frequency_cutoff_low, frequency_cutoff_high), btype='bandpass', output='ba', fs=fs)
-data = raw.get_data(picks=[0,1])
+data = new_raw.get_data(picks=[0,1])
 filt_dat = scipy.signal.filtfilt(b, a, data) # .get_data()
 
 #FFT TRANSFORMATION & PLOTTING
 x = filt_dat
 win_samp = 250
 noverlap = 0.5
-f, t, Sxx = fft_transform(x, win_samp, noverlap)
+new_fname = 'FFTClean_sub-021_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01.npy'
+f, t, Sxx = fft_transform(new_raw, x, win_samp, noverlap, new_fname)
+#d1 = np.load(new_fname)
 
 #EPOCH AND PLOT
-time_onsets = {'No_Stim': 1,
-              'Clinical': 102,
-              'Threshold': 820}
+time_onsets = {'1-200 sec': 1,
+              '200-400 sec': 200,
+              '400-600 sec': 400,
+              '600-800 sec': 600}
 window = 250
 noverlap = 0.5*250
 side = 1
 ps = epoch_PS(filt_dat, time_onsets, window, noverlap, side)
 
-plt.plot(np.arange(1, 127), np.mean(Sxx[1,:,1:10], axis = 1), label = 'NoStim')
-plt.plot(np.arange(1, 127), np.mean(Sxx[1,:,102:112], axis = 1), label = 'Clinical')
-plt.plot(np.arange(1, 127), np.mean(Sxx[1,:,820:830], axis = 1), label = 'Threshold')
+plt.plot(np.arange(1, 127), np.mean(Sxx[side,:,1:200], axis = 1), label = 'NoStim')
+plt.plot(np.arange(1, 127), np.mean(Sxx[side,:,200:400], axis = 1), label = 'Clinical')
+plt.plot(np.arange(1, 127), np.mean(Sxx[side,:,400:600], axis = 1), label = 'Threshold')
+plt.plot(np.arange(1, 127), np.mean(Sxx[side,:,600:800], axis = 1), label = 'Over')
 plt.legend()
-plt.xlim(5, 40)
+plt.xlim(50, 100)
+plt.ylim(0, 0.06)
 plt.show()
 
-#BASELINE CORRECTION WITHIN SAME RECORDING
-data = Sxx[1]
-t = t
-baseline = (1,100)
-stim_ch = 5
-bs_data = baseline_corr(data, t, baseline, stim_ch)
+### try sum of squared differences
+a = np.mean(Sxx[side,:,1:200], axis = 1)
+b = np.mean(Sxx[side,:,200:400], axis = 1)
+c = np.mean(Sxx[side,:,400:600], axis = 1)
+d = np.mean(Sxx[side,:,600:800], axis = 1)
 
+bdiff = (b-a)
+cdiff = (c-a)
+ddiff = (d-a)
+
+plt.plot(bdiff)
+plt.plot(cdiff)
+plt.plot(ddiff)
+plt.xlim(40, 100)
+plt.ylim(-0.02, 0.03)
+plt.show()
+
+
+###
+
+#BASELINE CORRECTION WITHIN SAME RECORDING
+Sxx = np.load('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub021\\FFT_sub-021_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01.npy')
+chan = 0
+data = Sxx[chan]
+t = np.arange(1,Sxx.shape[2]+1)
+baseline = (1,100)
+stim_ch = 4
+new_bcfname = 'BC-Stim_sub-021_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01'
+bs_data = baseline_corr(new_raw, data, t, baseline, stim_ch, new_bcfname)
+
+plt.savefig('BCLSTN-Stim_sub-021_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01.pdf')
 
 #BASELINE CORRECTION WITH M0S0 (different recording)
-m0s0_data = scipy.io.loadmat('\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub021\\Sub021_M0S0_BSTD_2022-05-20T081151_ZERO_TWO_RL.mat')
+m0s0_data = scipy.io.loadmat('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub021\\Sub021_M0S0_BSTD_2022-05-20T081151_ZERO_TWO_RL.mat')
 
 m0s0_data = m0s0_data['data']
+
 
 m0s0_data_filt = scipy.signal.filtfilt(b, a, m0s0_data) # .get_data()
 window = hann(win_samp, sym=False)
 f_m0s0, t_m0s0, Sxx_m0s0 = signal.spectrogram(x = m0s0_data_filt, fs = fs, window = window, noverlap = noverlap)
-plt.specgram(x = m0s0_data_filt[1,:], Fs = fs, noverlap = noverlap, cmap = 'viridis',
+plt.specgram(x = m0s0_data_filt[0,:], Fs = fs, noverlap = noverlap, cmap = 'viridis',
                         vmin = -25, vmax = 10)
+plt.ylabel('Frequency [Hz]')
+plt.xlabel('Time [sec]')
+plt.title('M0S0 LSTN Rest')
 plt.ylim(5,100)
 plt.show(block = False)
 
@@ -81,7 +114,7 @@ plt.show(block = False)
 Sxx_norm = normalization(Sxx)
 Sxx_m0s0_norm = normalization(Sxx_m0s0)
 
-plt.pcolormesh(Sxx_norm[1], cmap = 'viridis')
+plt.pcolormesh(Sxx_norm[0], cmap = 'viridis')
 plt.ylim(5,100)
 plt.show(block = False)
 
@@ -105,9 +138,15 @@ for k in range(m1s1_data[chan,:,:].shape[1]): #for each column (i.e. time in sec
 
 fig, ax = plt.subplots(1,1,figsize = (7,5))
 cf = plt.pcolormesh(bs_corrected, cmap = 'viridis', vmin = -0.2, vmax = 0.3)
-plt.ylim(40,100)
+plt.ylim(5,100)
 cbar = fig.colorbar(cf, ax = ax)
+cbar.set_label('zlogratio')
+plt.ylabel('Frequency [Hz]')
+plt.xlabel('Time [sec]')
+plt.title('LSTN: M1S0 Corrected to M0S0')
 plt.show(block = False)
+
+plt.savefig('Sub021_M1S0_LSTN_bcm0s0.pdf')
 
 bs_corrected.min()
 

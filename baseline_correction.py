@@ -1,12 +1,12 @@
 ####### BASELINE CORRECTION #######
 
-def baseline_corr(data, t, baseline, stim_ch, new_bcfname):
+def baseline_corr(raw, data, t, baseline, stim_ch, new_bcfname):
     bs_data = mne.baseline.rescale(data = data, times = t, baseline = baseline, mode = 'zlogratio')
 
     fig, ax = plt.subplots(1,1,figsize = (7,7))
     ax2 = ax.twinx()
 
-    cf = ax.pcolormesh(bs_data, cmap = 'viridis', vmin = -2, vmax = 3)
+    cf = ax.pcolormesh(bs_data, cmap = 'viridis', vmin = -1, vmax = 3)
     
     ax.set_ylim(5, 100)
     ax.set_ylabel('Frequency [Hz]')
@@ -23,6 +23,6 @@ def baseline_corr(data, t, baseline, stim_ch, new_bcfname):
     
     plt.show(block = False)
 
-    np.save(new_bcfname + '.npy', bs_data)
-    plt.savefig(new_bcfname + '.pdf')
+    #np.save(new_bcfname + '.npy', bs_data)
+    #plt.savefig(new_bcfname + '.pdf')
     return bs_data

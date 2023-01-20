@@ -23,7 +23,7 @@ def data_filtering(lowcut, highcut, nyq, data):
 
 
 #FFT Transformation and Spectrogram Plotting
-def fft_transform(raw, x, win_samp, noverlap, new_fname):
+def fft_transform(raw, x, win_samp, noverlap):
         
         # Input:
         #x = filt_dat
@@ -67,7 +67,7 @@ def fft_transform(raw, x, win_samp, noverlap, new_fname):
         
         plt.show(block = False)
 
-        np.save(new_fname, Sxx)
+        #np.save(new_fname, Sxx)
         return f, t, Sxx
 
         
@@ -94,7 +94,7 @@ def epoch_PS(filt_dat, time_onsets, window, noverlap, side):
                 #plt.plot(xnew, y_smooth, label = key)
                 plt.plot(ff, Pxx, label = key)
                 #ps1 = ps.append(ps, Pxx)
-        plt.xlim([5,40])
+        plt.xlim([60, 100])
 
         plt.xlabel('Frequency [Hz]')
         plt.ylabel('PSD [V^2/Hz]')

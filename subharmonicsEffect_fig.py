@@ -48,4 +48,4 @@ for a in ax:
     a.set_ylim(5,100)
 plt.show(block = False)
 
-plt.savefig('Sub021_Subharmonics.pdf')
+plt.savefig('Sub021_Subharmonics.png')
