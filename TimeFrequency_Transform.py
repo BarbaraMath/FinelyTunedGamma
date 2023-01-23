@@ -22,22 +22,15 @@ wav = mne.time_frequency.tfr_morlet(inst = epochs, freqs = np.arange(3,100), n_c
 
 
 #FILTERING
-filter_order = 5 
-frequency_cutoff_low = 5 
-frequency_cutoff_high = 100 
-fs = new_raw.info['sfreq'] # sample frequency: 250 Hz
-# create the filter
-b, a = scipy.signal.butter(filter_order, (frequency_cutoff_low, frequency_cutoff_high), btype='bandpass', output='ba', fs=fs)
 data = new_raw.get_data(picks=[0,1])
-filt_dat = scipy.signal.filtfilt(b, a, data) # .get_data()
+pass_filtered_dat = low_highpass_filtering(data)
 
 #FFT TRANSFORMATION & PLOTTING
 x = filt_dat
 win_samp = 250
 noverlap = 0.5
 new_fname = 'FFTClean_sub-021_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01.npy'
-f, t, Sxx = fft_transform(new_raw, x, win_samp, noverlap, new_fname)
-#d1 = np.load(new_fname)
+f, t, Sxx = fft_rawviz(new_raw, x, win_samp, noverlap, new_fname)
 
 #EPOCH AND PLOT
 time_onsets = {'1-200 sec': 1,
