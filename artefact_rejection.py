@@ -29,26 +29,11 @@ new_raw.save('Rej_sub-20210902PSTN_ses-2022041211000080_run-BrainSense2022090212
 
 new_raw = mne.io.read_raw_fif('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub021\\Rej_sub-20210511PStn_ses-2022082612233578_run-BrainSense20220826125900.fif')
 
-#FILTERING
-filter_order = 5 
-frequency_cutoff_low = 5 
-frequency_cutoff_high = 100 
-fs = new_raw.info['sfreq'] # sample frequency: 250 Hz
-# create the filter
-b, a = scipy.signal.butter(filter_order, (frequency_cutoff_low, frequency_cutoff_high), btype='bandpass', output='ba', fs=fs)
-data = new_raw.get_data(picks = (0,1))
-filt_dat = scipy.signal.filtfilt(b, a, data) # .get_data()
 
 # filter bandstop 
 lowcut = 70
 highcut = 74
-order = 4
-nyq = 0.5 * fs
-low = lowcut / nyq
-high = highcut / nyq
-b, a = signal.butter(order, [low, high], btype='bandstop')
 data = new_raw.get_data(picks = (0,1))
-filt_dat = signal.filtfilt(b,a,data)
 
 #FFT TRANSFORMATION & PLOTTING
 x = filt_dat

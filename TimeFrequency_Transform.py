@@ -1,36 +1,15 @@
 
-trial_onsets = np.array([
-       [ 1 ,      0 ,    1],
-       ]) #we need the samples
-event_dict = {'One_epoch':1}
-
-fig = mne.viz.plot_events(trial_onsets, sfreq=raw.info['sfreq'], first_samp=raw.first_samp)
-
-epochs = mne.Epochs(raw,events=trial_onsets,event_id = event_dict, tmin=0, tmax=200, baseline = None, preload = True)
-
-freqs = np.arange(1, 101)
-D = tfr_morlet(epochs, freqs=freqs, n_cycles=6, return_itc=False, average=True, picks = 1)
-
-D.plot(mode='zlogratio', picks = 0, baseline=None,
-        vmin = -20, vmax = 150,
-       cmap='inferno',
-)
-
-
-wav = mne.time_frequency.tfr_morlet(inst = epochs, freqs = np.arange(3,100), n_cycles=7, zero_mean=True, use_fft=False,
-       return_itc=False, decim=int(raw.info['sfreq'] / 20), n_jobs=1, picks=1, average=False, output='power', verbose='INFO')
-
+raw = mne.io.read_raw_fif('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub021\\Rej_sub-20210511PStn_ses-2022082612233578_run-BrainSense20220826125900.fif')
 
 #FILTERING
-data = new_raw.get_data(picks=[0,1])
-pass_filtered_dat = low_highpass_filtering(data)
+data = raw.get_data(picks=[0,1])
+pass_filtered_dat = low_highpass_filter(data)
 
 #FFT TRANSFORMATION & PLOTTING
-x = filt_dat
+x = pass_filtered_dat
 win_samp = 250
 noverlap = 0.5
-new_fname = 'FFTClean_sub-021_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01.npy'
-f, t, Sxx = fft_rawviz(new_raw, x, win_samp, noverlap, new_fname)
+f, t, Sxx = fft_rawviz(raw, x, win_samp, noverlap)
 
 #EPOCH AND PLOT
 time_onsets = {'1-200 sec': 1,
@@ -73,13 +52,13 @@ plt.show()
 
 #BASELINE CORRECTION WITHIN SAME RECORDING
 Sxx = np.load('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub021\\FFT_sub-021_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01.npy')
-chan = 0
+chan = 1
 data = Sxx[chan]
 t = np.arange(1,Sxx.shape[2]+1)
 baseline = (1,100)
-stim_ch = 4
+stim_ch = 5
 new_bcfname = 'BC-Stim_sub-021_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01'
-bs_data = baseline_corr(new_raw, data, t, baseline, stim_ch, new_bcfname)
+bs_data = baseline_corr(data, t, baseline, raw, stim_ch)
 
 plt.savefig('BCLSTN-Stim_sub-021_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01.pdf')
 
@@ -143,3 +122,10 @@ plt.savefig('Sub021_M1S0_LSTN_bcm0s0.pdf')
 
 bs_corrected.min()
 
+## Plot Interpolated Power Spectra
+
+Sxx = np.load('C:/Users/mathiopv\OneDrive - Charité - Universitätsmedizin Berlin/FTG_PROJECT/Sub021/FFT_sub-021_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01.npy')
+
+plt.plot(np.mean(Sxx[1,:,1:100],1))
+plt.xlim(5, 40)
+plt.show()

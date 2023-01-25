@@ -21,7 +21,7 @@ sys.path.append('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin
 
 sys.modules[__name__].__dict__.clear()
 
-raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\RampUpThres\\sub-021_ses-2022082612233578_run-BrainSense20220826125900.mat', info = None)
+raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub021\\sub-021_ses-2022082612233578_run-BrainSense20220826125900.mat', info = None)
 #for macbook at home
 #raw = mne.io.read_raw_fieldtrip('Macintosh HD\\Users\\barbaramathiopoulou\\OneDrive - Charité - Universitätsmedizin Berlin\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\\
 #    sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
