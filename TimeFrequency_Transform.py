@@ -129,3 +129,4 @@ Sxx = np.load('C:/Users/mathiopv\OneDrive - Charité - Universitätsmedizin Berl
 plt.plot(np.mean(Sxx[1,:,1:100],1))
 plt.xlim(5, 40)
 plt.show()
+
