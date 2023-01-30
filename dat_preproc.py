@@ -54,8 +54,8 @@ def bandstop_filter(lowcut, highcut, data):
 #FFT Transformation and Spectrogram Plotting
 def fft_rawviz(raw, x, win_samp, noverlap):
         """
-        fft_rawviz does a Fast Fourier Transformation to data and creates TF plots with stimulation amplitude
-        on top
+        fft_rawviz performs a Fast Fourier Transformation to data and creates TF plots 
+        with stimulation amplitude on top
 
         # Input:
         #x = filt_dat
@@ -106,7 +106,17 @@ def fft_rawviz(raw, x, win_samp, noverlap):
 
 
 def fft_transform(x, win_samp, noverlap):
-        
+        """
+        fft_transform performs a Fast Fourier Transformation to data without plotting them
+
+        input:
+        - x = filt_dat as np.array of shape channel x freq x time
+        - win_samp = window for fft in samples, e.g. 250 for 1 sec
+        - noverlap e.g. 0.25 (for 25%)
+
+        output:
+        - f (frequencies), t (time), Sxx: transformed data of shape same as input data
+        """
         fs = 250
         window = hann(win_samp, sym=False)
         

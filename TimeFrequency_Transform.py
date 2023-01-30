@@ -122,11 +122,11 @@ plt.savefig('Sub021_M1S0_LSTN_bcm0s0.pdf')
 
 bs_corrected.min()
 
-## Plot Interpolated Power Spectra
+## Plot Power Spectra 
 
 Sxx = np.load('C:/Users/mathiopv\OneDrive - Charité - Universitätsmedizin Berlin/FTG_PROJECT/Sub021/FFT_sub-021_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01.npy')
+dat = Sxx
+power_spectrum(dat=dat, xlim=(5,40))
 
-plt.plot(np.mean(Sxx[1,:,1:100],1))
-plt.xlim(5, 40)
-plt.show()
-
+acc_dat = open('C:/Users/mathiopv/OneDrive - Charité - Universitätsmedizin Berlin/FTG_PROJECT/Sub021/Sub-021_12mfu_dysk_segEnt_ramping_2-20220826T145332.DATA.Poly5','rb')
+acc_dat1 = acc_dat.read()

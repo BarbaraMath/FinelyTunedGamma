@@ -15,8 +15,10 @@ from scipy.signal import spectrogram, hann, butter, filtfilt
 from scipy import signal, interpolate
 from scipy.interpolate import make_interp_spline, BSpline
 from datetime import datetime
+from io import open
 
 os.getcwd() #for finding current working directory
+os.chdir('T:\Dokumente\PROJECTS\DYSKINESIA_PROJECT\FTG_GithubCode')
 sys.path.append('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\RampUpThres')
 
 sys.modules[__name__].__dict__.clear()
