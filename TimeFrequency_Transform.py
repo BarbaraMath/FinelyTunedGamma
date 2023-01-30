@@ -130,3 +130,6 @@ power_spectrum(dat=dat, xlim=(5,40))
 
 acc_dat = open('C:/Users/mathiopv/OneDrive - Charité - Universitätsmedizin Berlin/FTG_PROJECT/Sub021/Sub-021_12mfu_dysk_segEnt_ramping_2-20220826T145332.DATA.Poly5','rb')
 acc_dat1 = acc_dat.read()
+
+
+#trial
