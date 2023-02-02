@@ -8,7 +8,7 @@ raw145 = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - U
 filter_order = 5 
 frequency_cutoff_low = 5 
 frequency_cutoff_high = 100 
-fs = raw.info['sfreq'] # sample frequency: 250 Hz
+fs = 250 # sample frequency: 250 Hz
 # create the filter
 b, a = scipy.signal.butter(filter_order, (frequency_cutoff_low, frequency_cutoff_high), btype='bandpass', output='ba', fs=fs)
 data = raw145.get_data(picks=[0,1])
