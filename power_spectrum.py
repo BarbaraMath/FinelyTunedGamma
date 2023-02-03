@@ -1,7 +1,7 @@
 ####### PLOT POWER SPECTRA #######
 
 #A. AVERAGED PS
-def power_spectrum(dat, xlim = (5,100)):
+def power_spectrum(dat, xlim = (5,100), label = ''):
     """
     power_spectrum plots a (mean) power spectrum with the sem around the line as a shaded area
 
@@ -20,7 +20,7 @@ def power_spectrum(dat, xlim = (5,100)):
 
     y = p_vec
 
-    plt.plot(np.arange(1,127),y)
+    plt.plot(np.arange(1,127),y, label = label)
 
     if dat.ndim > 2:
         plt.fill_between(np.arange(1,127),y-sem, y+sem, alpha = 0.5)
@@ -49,5 +49,6 @@ def pwelch(dat):
     plt.show(block = False)
 
     return Pwelch_x
+
 
 

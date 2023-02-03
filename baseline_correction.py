@@ -28,7 +28,7 @@ def baseline_corr(data, t, baseline, raw = 0, stim_ch = 0):
     ax.set_ylim(5, 100)
     ax.set_ylabel('Frequency [Hz]')
     ax.set_xlabel('Time [sec]')
-    ax.set_title('Zlogratio Baseline Correction to 0-100 sec')
+    ax.set_title('Zlogratio Baseline Correction to 0-60 sec')
 
     cbar = fig.colorbar(cf, ax = ax, location = 'bottom', pad = 0.1, shrink = 0.5)
     cbar.set_label('zlogratio')

@@ -1,6 +1,6 @@
 #### CLEAR RECORDING FROM ARTEFACTS AND NORMALIZE ####
 
-raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub033\\sub-20210902PSTN_ses-2022041211000080_run-BrainSense20220902120700.mat', info = None)
+raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub033\\sub-20210902PSTN_ses-2022041211000080_run-BrainSense20220902122700.mat', info = None)
 
 fig = raw.plot(n_channels = 2, highpass = 5, lowpass = 100, filtorder = 5, duration = 20)
 fig.fake_keypress('a')
