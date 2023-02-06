@@ -161,7 +161,3 @@ def epoch_PS(filt_dat, time_onsets, window, noverlap, side):
         plt.show(block = False)
 
         return ps
-
-
-
-#make a change
