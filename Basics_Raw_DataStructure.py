@@ -1,48 +1,3 @@
-# import public packages
-import os
-import numpy as np
-import pandas as pd
-from matplotlib import pyplot as plt
-from matplotlib import colors
-from matplotlib.patches import Rectangle
-import scipy
-import mne
-import sys
-
-
-from mne.time_frequency import tfr_morlet
-from mne.baseline import rescale
-from scipy.fft import fft, fftfreq
-from scipy.signal import spectrogram, hann, butter, filtfilt
-from scipy import signal, interpolate
-from scipy.interpolate import make_interp_spline, BSpline
-from datetime import datetime
-from io import open
-
-from importlib import reload
-
-# import own functions
-from utils import find_folders
-
-
-reload(find_folders)
-onedrive = find_folders.get_onedrive_path()
-ftg_path = find_folders.get_onedrive_path("FTG")
-
-os.getcwd() #for finding current working directory
-os.chdir('T:\Dokumente\PROJECTS\DYSKINESIA_PROJECT\FTG_GithubCode')
-
-sys.modules[__name__].__dict__.clear()
-
-raw = mne.io.read_raw_fieldtrip(
-    os.path.join(
-        ftg_path,
-        "Sub021",
-        "perceive_output",
-        "sub-021_ses-2022082612233578_run-BrainSense20220826125900.mat"
-    ),
-    info = None
-)
 #for macbook at home
 #raw = mne.io.read_raw_fieldtrip('Macintosh HD\\Users\\barbaramathiopoulou\\OneDrive - Charité - Universitätsmedizin Berlin\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\\
 #    sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
@@ -52,12 +7,7 @@ raw = mne.io.read_raw_fieldtrip(
 #raw = mne.io.read_raw_fieldtrip('sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
 
 print(raw) #here you can see the n samples and the time
-print(raw.info) #ch_names, sfreq, nchan.
-n_time_samps = raw.n_times #nsamples
-time_secs = raw.times #timepoints
-raw.info.keys()
-ch_names = raw.ch_names
-n_chan = len(ch_names) 
+
 
 channel_names = ['LFP_L_13_STN', 'LFP_R_13_STN']
 two_meg_chans = raw[channel_names, 1:n_time_samps]

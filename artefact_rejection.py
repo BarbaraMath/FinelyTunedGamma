@@ -1,29 +1,7 @@
 #### CLEAR RECORDING FROM ARTEFACTS AND NORMALIZE ####
 
-raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub021\\sub-20210511PStn_ses-2022082612233578_run-BrainSense20220826011800.mat', info = None)
 
-fig = raw2.plot(n_channels = 2, highpass = 5, lowpass = 100, filtorder = 5, duration = 20)
-fig.fake_keypress('a')
 
-#First time making them
-interactive_annot = raw.annotations
-raw.annotations.save('Sub033_RampUpThres_artefactsAnnotations.csv', overwrite = True)
-
-#Importing them later
-annot_from_file = pd.read_csv('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub021\\Sub021_Freq110Hz_artefactsAnnotations.csv')
-new_onsets = fix_annot_onsets(annot_from_file)
-print(new_onsets)
-
-my_annot = mne.Annotations(onset=new_onsets,  # in seconds
-                           duration=annot_from_file.duration,  # in seconds, too
-                           description=annot_from_file.description,
-                           orig_time=raw.info['meas_date'])
-
-raw2 = raw.copy().set_annotations(my_annot)
-Draw = raw2.get_data(reject_by_annotation = 'omit')
-info = raw.info
-new_raw = mne.io.RawArray(Draw, info)
-new_raw.plot(n_channels = 2, highpass = 5, lowpass = 100, filtorder = 5, duration = 20)
 
 new_raw.save('Rej_sub-20210902PSTN_ses-2022041211000080_run-BrainSense20220902120700.fif')
 
