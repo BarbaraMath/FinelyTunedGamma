@@ -1,3 +1,4 @@
+# import public packages
 import os
 import numpy as np
 import pandas as pd
@@ -8,6 +9,7 @@ import scipy
 import mne
 import sys
 
+
 from mne.time_frequency import tfr_morlet
 from mne.baseline import rescale
 from scipy.fft import fft, fftfreq
@@ -17,13 +19,30 @@ from scipy.interpolate import make_interp_spline, BSpline
 from datetime import datetime
 from io import open
 
+from importlib import reload
+
+# import own functions
+from utils import find_folders
+
+
+reload(find_folders)
+onedrive = find_folders.get_onedrive_path()
+ftg_path = find_folders.get_onedrive_path("FTG")
+
 os.getcwd() #for finding current working directory
 os.chdir('T:\Dokumente\PROJECTS\DYSKINESIA_PROJECT\FTG_GithubCode')
-sys.path.append('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\RampUpThres')
 
 sys.modules[__name__].__dict__.clear()
 
-raw = mne.io.read_raw_fieldtrip('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub021\\sub-021_ses-2022082612233578_run-BrainSense20220826125900.mat', info = None)
+raw = mne.io.read_raw_fieldtrip(
+    os.path.join(
+        ftg_path,
+        "Sub021",
+        "perceive_output",
+        "sub-021_ses-2022082612233578_run-BrainSense20220826125900.mat"
+    ),
+    info = None
+)
 #for macbook at home
 #raw = mne.io.read_raw_fieldtrip('Macintosh HD\\Users\\barbaramathiopoulou\\OneDrive - Charité - Universitätsmedizin Berlin\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub025\\\
 #    sub-20210630PSTN_ses-2022062806215184_run-BrainSense20220628070600.mat', info = None)
