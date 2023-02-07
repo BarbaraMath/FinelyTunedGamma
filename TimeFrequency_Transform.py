@@ -11,7 +11,9 @@ win_samp = 250
 noverlap = 0.5
 f, t, Sxx = fft_rawviz(raw, x, win_samp, noverlap)
 
-np.save('FFT_sub-20210902PSTN_ses-2022041211000080_run-BrainSense20220902122700.npy',Sxx)
+np.save('FFT_sub-021_ses-DbsFu12mMedOn01_task-Freq110_FastRamp_acq-Streaming_run-01.npy',Sxx)
+sub = '021'
+plt.savefig(f'FFT_sub-{sub}_ses-DbsFu12mMedOn01_task-DoubleFreq_acq-Streaming_run-01.pdf')
 
 #PLOT POWER SPECTRA IN 0.0 - CLINICAL - THRESHOLD mA
 Sxx = np.load('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Sub033\\FFT_sub-033_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01.npy')
@@ -23,6 +25,16 @@ plt.legend()
 
 plt.savefig('Sub028_PS_Beta.jpg')
 ###
+reload(find_folders)
+results = find_folders.get_onedrive_path("results")
+print(results)
+
+fold_to_save = os.path.join(results,'Sub022')
+filename = 'trial_npy'
+
+if not os.path.exists(fold_to_save):
+       os.makedirs(fold_to_save)
+np.save(os.path.join(fold_to_save, filename), Sxx)
 
 #BASELINE CORRECTION WITHIN SAME RECORDING
 Sxx = np.load('C:\\Users\\mathiopv\\OneDrive - Charité - Universitätsmedizin Berlin\\FTG_PROJECT\\Subharmonics\\FFT_sub-021_ses-DbsFu12mMedOn01_task-RampUpThres_acq-Streaming_run-01.npy')
