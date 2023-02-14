@@ -1,4 +1,7 @@
 #### FIX ANNOTATIONS ONSETS ####
+import numpy as np
+from datetime import datetime
+
 
 def fix_annot_onsets(annot_from_file):
 

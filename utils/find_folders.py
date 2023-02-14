@@ -22,7 +22,7 @@ def get_onedrive_path(
 
     # from your cwd get the path and stop at 'Users'
     path = os.getcwd()
-    if path[0] == "T":
+    if path[0] == "t":
         
         path = os.path.join("C:", "Users", "mathiopv")
 

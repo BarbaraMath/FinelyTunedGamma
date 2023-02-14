@@ -1,3 +1,9 @@
+from matplotlib import pyplot as plt
+import scipy
+import mne
+from scipy.fft import fft, fftfreq
+from scipy.signal import spectrogram, hann, butter, filtfilt
+
 #DATA FILTERING
 
 #A. LOW/HIGH PASS FILTER
