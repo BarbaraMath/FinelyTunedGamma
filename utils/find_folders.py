@@ -1,7 +1,9 @@
 """EXPLANATION OF SCIPRT CONTENT"""
 
 import os
-from numpy import logical_and
+import pandas as pd
+import numpy as np
+import filecmp
 
 def get_onedrive_path(
     folder: str = 'onedrive',
@@ -22,7 +24,7 @@ def get_onedrive_path(
 
     # from your cwd get the path and stop at 'Users'
     path = os.getcwd()
-    if path[0] == "t":
+    if path[0] == "T":
         
         path = os.path.join("C:", "Users", "mathiopv")
 
@@ -51,3 +53,35 @@ def get_onedrive_path(
     
     elif folder.lower() == "results":
         return os.path.join(path, "FTG_PROJECT", 'results')
+
+
+ftg_path = get_onedrive_path("FTG")
+
+pat_path = os.path.join(
+    os.path.join(
+        ftg_path,
+        'data',
+        'raw_data',
+        'raw_mats',
+        "sub029"
+    )
+)
+
+metadata = pd.read_excel(
+    os.path.join(
+        pat_path,
+        "sub029_metadata.xlsx"
+    ),
+    sheet_name='Sheet1'
+)
+
+
+mat_files =  pd.Series(
+    [f for f in os.listdir(pat_path) if f.endswith('.mat')])
+
+
+id = metadata['perceiveFilename']
+
+for jk in np.arange(0,len(mat_files)):
+    idx = metadata.idx[metadata.perceiveFilename == mat_files[jk]]
+    print(idx[0])
