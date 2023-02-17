@@ -3,6 +3,7 @@
 import os
 import pandas as pd
 import numpy as np
+from numpy import logical_and 
 import filecmp
 
 def get_onedrive_path(
@@ -24,7 +25,7 @@ def get_onedrive_path(
 
     # from your cwd get the path and stop at 'Users'
     path = os.getcwd()
-    if path[0] == "T":
+    if path[0] == "t":
         
         path = os.path.join("C:", "Users", "mathiopv")
 
@@ -33,6 +34,10 @@ def get_onedrive_path(
         while os.path.dirname(path)[-5:] != 'Users':
             path = os.path.dirname(path) # path is now leading to Users/username
     
+    elif path[0] == '/':
+
+        path = os.path.join('/Users','barbaramathiopoulou')
+            
     # get the onedrive folder containing "onedrive" and "charit" and add it to the path
     onedrive_f = [
         f for f in os.listdir(path) if logical_and(
@@ -54,7 +59,7 @@ def get_onedrive_path(
     elif folder.lower() == "results":
         return os.path.join(path, "FTG_PROJECT", 'results')
 
-
+''''
 ftg_path = get_onedrive_path("FTG")
 
 pat_path = os.path.join(
@@ -85,3 +90,4 @@ id = metadata['perceiveFilename']
 for jk in np.arange(0,len(mat_files)):
     idx = metadata.idx[metadata.perceiveFilename == mat_files[jk]]
     print(idx[0])
+'''

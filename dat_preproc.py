@@ -1,7 +1,8 @@
 from matplotlib import pyplot as plt
-import scipy
 import mne
-from scipy.fft import fft, fftfreq
+import scipy
+import numpy as np
+#from scipy.fft import fft, fftfreq
 from scipy.signal import spectrogram, hann, butter, filtfilt
 
 #DATA FILTERING
@@ -51,9 +52,9 @@ def bandstop_filter(lowcut, highcut, data):
         high = highcut / nyq
         
         #create the filter
-        b, a = signal.butter(order, [low, high], btype='bandstop')
+        b, a = scipy.signal.butter(order, [low, high], btype='bandstop')
         
-        stop_filtered_dat = signal.filtfilt(b,a,data)
+        stop_filtered_dat = scipy.signal.filtfilt(b,a,data)
 
         return stop_filtered_dat
 
@@ -68,9 +69,10 @@ def fft_rawviz(raw, x, win_samp, noverlap):
         #win_samp = window for fft in samples, e.g. 250 for 1 sec
         #noverlap e.g. 0.25 (for 25%)
         """
+
         fs = 250
         window = hann(win_samp, sym=False)
-        f, t, Sxx = signal.spectrogram(x = x, fs = fs, window = window, noverlap = noverlap)
+        f, t, Sxx = scipy.signal.spectrogram(x = x, fs = fs, window = window, noverlap = noverlap)
          
         #Plot Spectrograms of both STNs
         fig, axes = plt.subplots(1,2, figsize = (18,6))
@@ -126,7 +128,7 @@ def fft_transform(x, win_samp, noverlap):
         fs = 250
         window = hann(win_samp, sym=False)
         
-        f, t, Sxx = signal.spectrogram(x = x, fs = fs, window = window, noverlap = noverlap)
+        f, t, Sxx = scipy.signal.spectrogram(x = x, fs = fs, window = window, noverlap = noverlap)
 
         plt.specgram(x = x, Fs = fs, noverlap = noverlap, cmap = 'viridis',
                         vmin = -25, vmax = 10)
