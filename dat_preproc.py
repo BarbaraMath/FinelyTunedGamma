@@ -8,7 +8,7 @@ from scipy.signal import spectrogram, hann, butter, filtfilt
 #DATA FILTERING
 
 #A. LOW/HIGH PASS FILTER
-def low_highpass_filter(data):
+def low_highpass_filter(data, frequency_cutoff_low, frequency_cutoff_high):
         """
         low_highpass_filter applies low (100Hz) and high pass (5Hz) filter, with a 
         5th order butterworth filter.
@@ -22,8 +22,8 @@ def low_highpass_filter(data):
         requires: scipy.signal
         """
         filter_order = 5 
-        frequency_cutoff_low = 5 
-        frequency_cutoff_high = 100 
+        #frequency_cutoff_low = 5 
+        #frequency_cutoff_high = 100 
         fs = 250 
             
         # create the filter
