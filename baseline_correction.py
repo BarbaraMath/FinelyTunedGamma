@@ -1,5 +1,6 @@
 ####### BASELINE CORRECTION #######
-
+import mne
+from mne.baseline import rescale
 def baseline_corr(data, t, baseline, raw = 0, stim_ch = 0):
     """
     baseline_corr performs a zlogratio baseline correction of the input recording
