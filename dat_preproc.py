@@ -83,13 +83,16 @@ def fft_rawviz(raw, x, win_samp, noverlap):
         for kj in np.array([0,1]):
                 
                 ax2 = axes[kj].twinx() #make right axis linked to the left one
-
-                stim_data = (raw.get_data(picks = stim)[0,:]/3) #define stim channel
+                if kj == 1:
+                        stim_data = (raw.get_data(picks = stim)[0,:]/3) #define stim channel
+                elif kj == 0:
+                        stim_data = (raw.get_data(picks = stim)[0,:])
                 
                 #Plot LFP data
                 axes[ax_c].specgram(x = x[kj,:], Fs = fs, noverlap = noverlap, cmap = 'viridis',
                         vmin = -25, vmax = 10)
                 axes[ax_c].set_ylim(bottom = 5,top = 100)
+                axes[ax_c].set_xlim(0,raw.n_times/250)
                 
                 #Plot stim channel on top
                 ax2.plot(raw.times, stim_data, 'w', linewidth = 1.5)
