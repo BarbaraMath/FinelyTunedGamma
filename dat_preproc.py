@@ -84,7 +84,7 @@ def fft_rawviz(raw, x, win_samp, noverlap):
                 
                 ax2 = axes[kj].twinx() #make right axis linked to the left one
                 if kj == 1:
-                        stim_data = (raw.get_data(picks = stim)[0,:]/3) #define stim channel
+                        stim_data = (raw.get_data(picks = stim)[0,:]) #define stim channel
                 elif kj == 0:
                         stim_data = (raw.get_data(picks = stim)[0,:]/3)
                 
@@ -143,13 +143,13 @@ def fft_transform(x, win_samp, noverlap):
         return f, t, Sxx
 
 #PS Plotting of epochs in no stim/clinical/threshold
-def epoch_PS(filt_dat, time_onsets, window, noverlap, side):
+def epoch_ps(filt_dat, epoch_df, window, noverlap, side, ylim2, title):
+        """A dummy docstring."""
+        ps = np.empty([epoch_df.shape[0],126])
 
-        ps = np.empty([len(time_onsets),126])
-
-        for key, value in time_onsets.items():
-                this_onset = value*250
-                this_offset = this_onset + (10*250)
+        for index, row in epoch_df.iterrows():
+                this_onset = epoch_df.onset[index]*250
+                this_offset = this_onset + (epoch_df.duration[index]*250)
                 
                 #window = hann(250, sym=False)
 
@@ -162,13 +162,16 @@ def epoch_PS(filt_dat, time_onsets, window, noverlap, side):
                 
                 
                 #plt.plot(xnew, y_smooth, label = key)
-                plt.plot(ff, Pxx, label = key)
-                #ps1 = ps.append(ps, Pxx)
-        plt.xlim([60, 100])
+                plt.plot(ff, Pxx, label = epoch_df.description[index])
+                ps[index] = Pxx
+        
+        plt.xlim([50, 100])
+        plt.ylim([0, ylim2])
 
         plt.xlabel('Frequency [Hz]')
-        plt.ylabel('PSD [V^2/Hz]')
+        plt.ylabel('PSD [$V^{2}$/Hz]')
         plt.legend()
+        plt.title(title)
         plt.show(block = False)
 
         return ps

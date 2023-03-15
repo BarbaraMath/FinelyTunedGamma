@@ -15,7 +15,7 @@ def get_onedrive_path(
     Folder has to be in ['onedrive', 'Percept_Data_structured', 'sourcedata']
     """
     folder_options = [
-        'onedrive', "ftg", 'data', 'results', 'figures'
+        'onedrive', "ftg",'entrainment', 'data', 'results', 'figures'
     ]
     # Error checking, if folder input is in folder options
     if folder.lower() not in folder_options:
@@ -49,6 +49,8 @@ def get_onedrive_path(
     if folder.lower() == "onedrive": return path
 
     elif folder.lower() == "ftg": return os.path.join(path, "FTG_PROJECT")
+
+    elif folder.lower() == 'entrainment': return os.path.join(path, 'ENTRAINMENT_PROJECT')
     
     elif folder.lower() == "data":
         return os.path.join(path, "FTG_PROJECT", 'data')
