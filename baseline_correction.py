@@ -1,6 +1,10 @@
 ####### BASELINE CORRECTION #######
 import mne
+import numpy as np
+import pandas as pd
 from mne.baseline import rescale
+from matplotlib import pyplot as plt
+
 def baseline_corr(data, t, baseline, raw = 0, stim_ch = 0):
     """
     baseline_corr performs a zlogratio baseline correction of the input recording
@@ -13,14 +17,14 @@ def baseline_corr(data, t, baseline, raw = 0, stim_ch = 0):
     - stim_ch: optional argument, to specify stimulation channel e.g. 4(LSTN) or 5(RSTN)
 
     """
-    bs_data = mne.baseline.rescale(data = data, times = t, baseline = baseline, mode = 'zlogratio')
+    bs_data = mne.baseline.rescale(data = data, times = t, baseline = baseline, mode = 'zscore')
 
     fig, ax = plt.subplots(1,1,figsize = (7,7))
     cf = ax.pcolormesh(bs_data, cmap = 'viridis', vmin = -1, vmax = 3)
 
     if raw != 0:
         ax2 = ax.twinx()
-        stim_data = (raw.get_data(picks = stim_ch)[0,:]/3)
+        stim_data = (raw.get_data(picks = stim_ch)[0,:])
         ax2.plot(raw.times, stim_data,'w',linewidth = 1.5)
         ax2.set_yticks(np.arange(0,4.5,0.5))
         ax2.set_ylabel('Stimulation Amplitude [mA]')
@@ -29,7 +33,7 @@ def baseline_corr(data, t, baseline, raw = 0, stim_ch = 0):
     ax.set_ylim(5, 100)
     ax.set_ylabel('Frequency [Hz]')
     ax.set_xlabel('Time [sec]')
-    ax.set_title('Zlogratio Baseline Correction to 0-60 sec')
+    ax.set_title('Zscored Spectrogram')
 
     cbar = fig.colorbar(cf, ax = ax, location = 'bottom', pad = 0.1, shrink = 0.5)
     cbar.set_label('zlogratio')

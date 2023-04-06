@@ -1,4 +1,8 @@
 ####### NORMALIZATION #######
+import numpy as np
+import pandas as pd
+import matplotlib
+from matplotlib import pyplot as plt
 
 def sum_normalization(Sxx):
    """
@@ -45,3 +49,4 @@ def sum_normalization(Sxx):
    plt.show(block = False)
    
    return Sxx_norm
+
