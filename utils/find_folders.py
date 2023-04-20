@@ -5,6 +5,8 @@ import pandas as pd
 import numpy as np
 from numpy import logical_and 
 import filecmp
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 def get_onedrive_path(
     folder: str = 'onedrive',
@@ -93,3 +95,9 @@ for jk in np.arange(0,len(mat_files)):
     idx = metadata.idx[metadata.perceiveFilename == mat_files[jk]]
     print(idx[0])
 '''
+
+
+def open_image(image_path):
+    image = mpimg.imread(image_path)
+    plt.imshow(image)
+    plt.show(block = False)

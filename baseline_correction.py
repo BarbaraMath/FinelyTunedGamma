@@ -25,7 +25,7 @@ def baseline_corr(data, t, baseline, raw = 0, stim_ch = 0):
     if raw != 0:
         ax2 = ax.twinx()
         stim_data = (raw.get_data(picks = stim_ch)[0,:])
-        ax2.plot(raw.times, stim_data,'w',linewidth = 1.5)
+        ax2.plot(raw.times, stim_data/3,'w',linewidth = 1.5)
         ax2.set_yticks(np.arange(0,4.5,0.5))
         ax2.set_ylabel('Stimulation Amplitude [mA]')
     
@@ -35,8 +35,8 @@ def baseline_corr(data, t, baseline, raw = 0, stim_ch = 0):
     ax.set_xlabel('Time [sec]')
     ax.set_title('Zscored Spectrogram')
 
-    cbar = fig.colorbar(cf, ax = ax, location = 'bottom', pad = 0.1, shrink = 0.5)
-    cbar.set_label('zlogratio')
+    #cbar = fig.colorbar(cf, ax = ax, location = 'bottom', pad = 0.1, shrink = 0.5)
+    #cbar.set_label('zlogratio')
 
     plt.show(block = False)
 
