@@ -1,4 +1,8 @@
 ####### PLOT POWER SPECTRA #######
+from scipy.signal import chirp, find_peaks, peak_widths
+from matplotlib import pyplot as plt
+import numpy as np
+
 
 #A. AVERAGED PS
 def power_spectrum(dat, xlim = (5,100), label = ''):
@@ -51,4 +55,30 @@ def pwelch(dat):
     return Pwelch_x
 
 
+def powerSpectrum_width(x1, x2, height, subID):
 
+    peaks1, _ = find_peaks(x1, height = height)
+    print(peaks1+50)
+    results_half1 = peak_widths(x1, peaks1, rel_height=0.5)
+
+    peaks2, _ = find_peaks(x2, height = height)
+    print(peaks2+50)
+    results_half2 = peak_widths(x2, peaks2, rel_height=0.5)
+
+    plt.plot(np.arange(0,51),x1, color = 'blue', label = 'MedOn-StimOff')
+    plt.plot(peaks1,x1[peaks1+50],'x')
+
+    plt.plot(np.arange(0,51),x2, color = 'red', label = 'MedOn-StimOn')
+    plt.plot(peaks2,x2[peaks2+50],'x')
+
+    plt.hlines(*results_half1[1:], color="blue")
+    plt.hlines(*results_half2[1:], color="red")
+    plt.xticks(np.arange(0,51,10), labels = np.arange(50,101,10))
+
+    plt.xlabel('Frequency [Hz]')
+    plt.ylabel('LFP Power')
+    plt.title(str(subID))
+
+    plt.legend()
+
+    return peaks1, results_half1[0], peaks2, results_half2[0]
