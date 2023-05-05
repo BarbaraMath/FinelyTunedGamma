@@ -17,27 +17,50 @@ def baseline_corr(data, t, baseline, raw = 0, stim_ch = 0):
     - stim_ch: optional argument, to specify stimulation channel e.g. 4(LSTN) or 5(RSTN)
 
     """
+
     bs_data = mne.baseline.rescale(data = data, times = t, baseline = baseline, mode = 'zscore')
 
-    fig, ax = plt.subplots(1,1,figsize = (7,7))
-    cf = ax.pcolormesh(bs_data, cmap = 'viridis', vmin = -1, vmax = 3)
+    #Plot Spectrograms of both STNs
+    fig, axes = plt.subplots(1,2, figsize = (18,6))
+    fig.suptitle('Z-Scored Spectrogram')
+
+
+    ax_c = 0
+    stim = 4
+
+    for kj in np.array([0,1]):
+        ax2 = axes[kj].twinx() #make right axis linked to the left one
+        ''''
+        if kj == 1:
+            stim_data = (raw.get_data(picks = stim)[0,:]) #define stim channel
+        elif kj == 0:
+            stim_data = (raw.get_data(picks = stim)[0,:])
+'''
+        #Plot LFP data
+        axes[ax_c].pcolormesh(bs_data[ax_c,:], cmap = 'viridis', vmin = -1, vmax = 3)
+        axes[ax_c].set_ylim(bottom = 5,top = 100)
+        axes[ax_c].set_xlim(0,raw.n_times/250)
+
+        axes[ax_c].set_ylim(5, 100)
+        axes[ax_c].set_ylabel('Frequency [Hz]')
+        axes[ax_c].set_xlabel('Time [sec]')
+        axes[ax_c].set_title(raw.ch_names[kj])
+
+        ax_c += 1
+        stim += 1
 
     if raw != 0:
-        ax2 = ax.twinx()
         stim_data = (raw.get_data(picks = stim_ch)[0,:])
-        ax2.plot(raw.times, stim_data/3,'w',linewidth = 1.5)
+        ax2.plot(raw.times, stim_data,'w',linewidth = 1.5)
         ax2.set_yticks(np.arange(0,4.5,0.5))
         ax2.set_ylabel('Stimulation Amplitude [mA]')
     
     
-    ax.set_ylim(5, 100)
-    ax.set_ylabel('Frequency [Hz]')
-    ax.set_xlabel('Time [sec]')
-    ax.set_title('Zscored Spectrogram')
+        
 
-    #cbar = fig.colorbar(cf, ax = ax, location = 'bottom', pad = 0.1, shrink = 0.5)
-    #cbar.set_label('zlogratio')
-
+        #cbar = fig.colorbar(cf, ax = ax, location = 'bottom', pad = 0.1, shrink = 0.5)
+        #cbar.set_label('zlogratio')
+    
     plt.show(block = False)
 
     #np.save(new_bcfname + '.npy', bs_data)
