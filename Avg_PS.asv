@@ -23,12 +23,8 @@ mypower(1:126, nanmean(subharm{:,:},2),'magenta','move')
 
 xlim([50 100])
 
-%%
+T = readtable('Sub005_FFT_PS.csv')
 
-
-
-
-
-
-
+mypower(1:126, nanmean(T{:,5},2),'blue')
+xlim([50 90])
 
