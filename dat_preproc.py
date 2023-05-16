@@ -175,3 +175,31 @@ def epoch_ps(filt_dat, epoch_df, window, noverlap, side, ylim2, title):
         plt.show(block = False)
 
         return ps
+
+from scipy.interpolate import make_interp_spline, BSpline
+from scipy import stats
+
+def mypower(ps):
+        
+        x = np.arange(1,127)
+        xvals = np.linspace(1,127,1250)
+
+        if ps.ndim > 2:
+                y = np.mean(ps,1)
+                spl = make_interp_spline(x,y, k=3)  # type: BSpline
+                power_smooth = spl(xvals)
+                sem = stats.sem(ps,1)
+                spl_sem = make_interp_spline(x,sem,k=3)  # type: BSpline
+                sem_smooth = spl_sem(xvals) 
+
+                plt.plot(xvals, power_smooth)
+                plt.fill_between(xvals, power_smooth - sem_smooth, power_smooth + sem_smooth)
+        else:
+                y = ps
+                spl = make_interp_spline(x,y, k=3)  # type: BSpline
+                power_smooth = spl(xvals)
+                plt.plot(xvals, power_smooth)
+
+        plt.xlabel('Frequency [Hz]')
+        plt.ylabel('Spectral Power')
+
