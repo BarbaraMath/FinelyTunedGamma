@@ -14,7 +14,7 @@ def low_highpass_filter(data, frequency_cutoff_low, frequency_cutoff_high):
         5th order butterworth filter.
 
         input <-- data:
-        np.array of shape channels x freqs x time e.g. data = raw.get_data(picks=[0,1])
+        np.array of data = raw.get_data(picks=[0,1])
 
         output <-- pass_filtered_dat:
         np.array with the same shape as input array
@@ -86,7 +86,7 @@ def fft_rawviz(raw, x, win_samp, noverlap):
                 if kj == 1:
                         stim_data = (raw.get_data(picks = stim)[0,:]) #define stim channel
                 elif kj == 0:
-                        stim_data = (raw.get_data(picks = stim)[0,:])
+                        stim_data = (raw.get_data(picks = stim)[0,:]/3)
                 
                 #Plot LFP data
                 axes[ax_c].specgram(x = x[kj,:], Fs = fs, noverlap = noverlap, cmap = 'viridis',
