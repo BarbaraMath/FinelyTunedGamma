@@ -184,7 +184,7 @@ def mypower(ps):
         x = np.arange(1,127)
         xvals = np.linspace(1,127,1250)
 
-        if ps.ndim > 2:
+        if ps.shape[1] > 1:
                 y = np.mean(ps,1)
                 spl = make_interp_spline(x,y, k=3)  # type: BSpline
                 power_smooth = spl(xvals)
@@ -193,7 +193,7 @@ def mypower(ps):
                 sem_smooth = spl_sem(xvals) 
 
                 plt.plot(xvals, power_smooth)
-                plt.fill_between(xvals, power_smooth - sem_smooth, power_smooth + sem_smooth)
+                plt.fill_between(xvals, power_smooth - sem_smooth, power_smooth + sem_smooth, alpha = 0.3)
         else:
                 y = ps
                 spl = make_interp_spline(x,y, k=3)  # type: BSpline
