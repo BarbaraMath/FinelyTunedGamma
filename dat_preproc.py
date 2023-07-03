@@ -90,8 +90,8 @@ def fft_rawviz(raw, x, win_samp, noverlap):
                 
                 #Plot LFP data
                 axes[ax_c].specgram(x = x[kj,:], Fs = fs, noverlap = noverlap, cmap = 'viridis',
-                        vmin = -25, vmax = -3) #-25,10
-                axes[ax_c].set_ylim(bottom = 40,top = 90)
+                        vmin = -25, vmax = 10) #-25,10
+                axes[ax_c].set_ylim(bottom = 0,top = 100)
                 axes[ax_c].set_xlim(0,raw.n_times/250)
                 
                 #Plot stim channel on top

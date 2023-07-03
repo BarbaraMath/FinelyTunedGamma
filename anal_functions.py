@@ -51,7 +51,7 @@ def anal_transitions_1tp(anal_epochs, anal_fif, subID, dur):
 
 
     filtered_df = anal_epochs[anal_epochs['Percept_ID'] == subID]
-    subh_value = filtered_df['Switch_Off'].values[0]
+    subh_value = filtered_df['Subh_On'].values[0]
 
     # Extract the data starting from 'preSub_On' for 10 seconds
     preSub_On_start = subh_value - dur
@@ -79,5 +79,6 @@ def anal_transitions_1tp(anal_epochs, anal_fif, subID, dur):
     plt.xlabel('Time [sec]')
     plt.ylabel('Z-Scored Smoothed Analytic Signal')
     plt.title(str(subID) + '-One Time Point')
+    plt.ylim(0,3)
 
     return cropped_anal_1tp
