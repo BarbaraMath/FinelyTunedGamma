@@ -8,12 +8,13 @@ from matplotlib import pyplot as plt
 def fit_fooof(SUBID, PATH, spectrum):
     # Initialize a FOOOF object
     fm = FOOOF(min_peak_height=1,
-        max_n_peaks=1,
-        peak_threshold=10)
+        max_n_peaks=10,
+        #peak_threshold=10,
+        )
 
     # Set the frequency range to fit the model
     freqs = np.arange(1,127)
-    freq_range = [60, 90]
+    freq_range = [1, 90]
 
     # Initialize a FOOOF object
     fm = FOOOF(
