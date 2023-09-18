@@ -24,7 +24,7 @@ def low_highpass_filter(data, frequency_cutoff_low, frequency_cutoff_high):
         filter_order = 5 
         #frequency_cutoff_low = 5 
         #frequency_cutoff_high = 100 
-        fs = 250 
+        fs = 4096 
             
         # create the filter
         b, a = scipy.signal.butter(filter_order, (frequency_cutoff_low, frequency_cutoff_high), 
@@ -47,7 +47,7 @@ def bandstop_filter(lowcut, highcut, data):
         requires: scipy.signal
         """      
         order = 4
-        nyq = 0.5 * 250 #sampling rate
+        nyq = 0.5 * 4096 #sampling rate
         low = lowcut / nyq
         high = highcut / nyq
         
@@ -70,7 +70,7 @@ def fft_rawviz(raw, x, win_samp, noverlap):
         #noverlap e.g. 0.25 (for 25%)
         """
 
-        fs = 250
+        fs = raw.info['sfreq']
         window = hann(win_samp, sym=False)
         f, t, Sxx = scipy.signal.spectrogram(x = x, fs = fs, window = window, noverlap = noverlap)
          
