@@ -24,7 +24,7 @@ def low_highpass_filter(data, frequency_cutoff_low, frequency_cutoff_high):
         filter_order = 5 
         #frequency_cutoff_low = 5 
         #frequency_cutoff_high = 100 
-        fs = 4096 
+        fs = 250 
             
         # create the filter
         b, a = scipy.signal.butter(filter_order, (frequency_cutoff_low, frequency_cutoff_high), 
