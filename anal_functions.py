@@ -90,14 +90,6 @@ def anal_signal_transform(raw, path, subID, SIDE, peakMed, peakStim):
     return raw_anal
 
 
-
-
-
-    
-
-
-
-
 def anal_transitions_2tp(anal_epochs, anal_fif, subID, dur):
 
 
@@ -177,4 +169,122 @@ def anal_transitions_1tp(anal_epochs, anal_fif, subID, dur):
     plt.title(str(subID) + '-One Time Point')
     plt.ylim(0,3)
 
-    return cropped_anal_1tp
+    return 
+
+def entrainment_latency(path, anal_unsm, filename, timeon, timeoff, amp, save):
+    subID = filename[0:6]
+
+    #Get the channels:
+    tstamps_sec = anal_unsm.get_data(picks ='Time_Sec' )[0]
+    subharm = anal_unsm.get_data(picks = 'StimOn')[0]
+    stim = anal_unsm.get_data(picks = 'StimVec')[0]
+
+    #tstamps_sec = tstamps_sec[220 * 250:]
+    #subharm = subharm[220 * 250:]
+    #stim = stim[220 * 250:]
+
+    #Zscore to Rest & save it
+    first_samples = subharm[timeon:timeoff]
+    mean = np.mean(first_samples)
+    std_dev = np.std(first_samples)
+    z_scores = (subharm - mean) / std_dev
+    threshold = np.max(z_scores)*(1.8/3)
+
+    if save == 1:
+        np.save(os.path.join(path, f'{subID}_ZscoredRest_Entrainment.npy'), z_scores)
+
+    #CheckPoint
+    plt.plot(tstamps_sec, z_scores)
+    plt.plot(tstamps_sec, stim)
+    plt.xlabel('Time [sec]')
+    plt.ylabel('Zscored Analytic Signal')
+    plt.show()
+
+    exceeds_threshold_index = np.where((z_scores > threshold) & (stim > amp))[0]
+    stim_SubhOn = stim[exceeds_threshold_index[0]]
+    print(f'Threshold being used is {np.round(threshold, decimals = 2)}')
+    print(f'Amplitude where Entrainment occurs is: {stim_SubhOn}mA')
+
+    #Plot Filtered Data
+    mask = stim >= stim_SubhOn
+    filtered_data = np.where(mask, subharm, np.nan)
+    stim_filtered = np.where(mask, stim, np.nan)
+
+    filtered_subh = filtered_data[~np.isnan(filtered_data)]
+    filtered_stim = stim_filtered[~np.isnan(stim_filtered)]
+
+    idx = np.where(~np.isnan(filtered_data))[0][0]
+
+
+    adjust_thres = exceeds_threshold_index[0] - idx
+    adjust_thres1 = (adjust_thres/250)
+
+    print(f'Entrainment occurs after {adjust_thres1} Sec at {stim_SubhOn}mA')
+
+    ####### PLOT 1 ###############################################################
+    xax = np.arange(len(filtered_subh))
+    time = (xax / 250)
+
+    fig, ax1 = plt.subplots(figsize = (10,6))
+    ax1.plot(time,filtered_subh, color='blue', alpha = 0.5, label = 'Entrainment Envelope')
+    ax2 = ax1.twinx()
+    ax2.plot(time,filtered_stim, color='black', label = 'Stimulation')
+    legend_added = False
+    # Plot vertical lines at regular intervals every 2 samples for the first 5 seconds
+    for i in range(0, 100, 10):
+        # Add the label 'xxx' only once
+        if not legend_added:
+            plt.axvline(x=i, color='gray', alpha=0.2, label='1250 Pulses')
+            legend_added = True
+        else:
+            plt.axvline(x=i, color='gray', alpha=0.2)
+
+    ax1.axvline(x=adjust_thres1, color='r', linestyle='--', label= f'{np.round(threshold, decimals = 2)} STD')
+    ax2.set_ylabel('Stimulation Amplitude [mA]')
+    ax1.set_ylabel('Envelope Z-Scored to Rest M1S0')
+    plt.xlim(0,15)
+    ax1.set_xlabel('Time [sec]')
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    lines = lines1 + lines2
+    labels = labels1 + labels2
+    fig.legend(lines, labels)  
+    plt.title(f'{subID}Latency_Long') 
+    plt.show()
+
+    if save == 1:
+        plt.savefig(os.path.join(path,
+                                f'{subID}Latency_Long'
+                                ), dpi = 200)
+
+    ####### PLOT 2 ###############################################################
+    fig, ax1 = plt.subplots(figsize = (10,6))
+    ax1.plot(time,filtered_subh, color='blue', alpha = 0.5, label = 'Entrainment Envelope')
+    ax2 = ax1.twinx()
+    ax2.plot(time,filtered_stim, color='black', label = 'Stimulation')
+    legend_added = False
+    ax1.axvline(x=adjust_thres1, color='r', linestyle='--', label= f'Threshcold Entrainment >{np.round(threshold, decimals = 2)} STD')
+    ax2.set_ylabel('Stimulation Amplitude [mA]')
+    ax1.set_ylabel('Envelope Z-Scored to Rest M1S0')
+    plt.xlim(0,adjust_thres1+3)
+    ax1.set_xlabel('Time [sec]')
+    lines1, labels1 = ax1.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    lines = lines1 + lines2
+    labels = labels1 + labels2
+    fig.legend(lines, labels)   
+    plt.title(f'{subID}Latency_Short') 
+    plt.show()
+
+    if save == 1:
+        plt.savefig(os.path.join(path,
+                                f'{subID}Latency_Short'
+                                ), dpi = 200)
+
+
+    filtered_array2save = np.vstack((filtered_subh, filtered_stim))
+
+    if save == 1:
+        np.save(os.path.join(path,
+                f'{subID}_FilteredArray.npy'), filtered_array2save)
+    return z_scores, adjust_thres1, filtered_array2save
