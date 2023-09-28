@@ -27,13 +27,13 @@ def fit_fooof(SUBID, PATH, spectrum):
     fm.plot(plot_peaks='dot-shade-outline', add_legend=True, ax=ax)
     plt.title(f'Error: {np.round(fm.error_, decimals = 4)}, R-squared: {np.round(fm.r_squared_, decimals = 4)}')
     
-    plt.savefig(os.path.join(
-        PATH, f'{SUBID}_FOOOF_FIT.jpg'),
-        dpi=200
-    )
+    #plt.savefig(os.path.join(
+    #    PATH, f'{SUBID}_FOOOF_FIT.jpg'),
+   #     dpi=200
+    #)
 
     file_name = f'{SUBID}_fooof_fit.json'
     file_path = os.path.join(PATH,file_name)
-    fm.save(file_path, save_results=True, save_settings=True, save_data=True)
+    #fm.save(file_path, save_results=True, save_settings=True, save_data=True)
 
     return fm
