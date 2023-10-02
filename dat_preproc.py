@@ -4,6 +4,7 @@ import scipy
 import numpy as np
 #from scipy.fft import fft, fftfreq
 from scipy.signal import spectrogram, hann, butter, filtfilt
+import os
 
 #DATA FILTERING
 
@@ -204,3 +205,66 @@ def mypower(ps):
         plt.xlabel('Frequency [Hz]')
         plt.ylabel('Spectral Power')
 
+def peak_function(raw, subID, SIDE, peakStim, resutls_path, figs_path, SAVE):
+
+        x = raw.get_data() 
+
+        if SIDE == 0:
+                STIM = 4
+        elif SIDE == 1:
+                STIM = 5
+
+        x1 = x[SIDE,:]
+        stim_vec = x[STIM,:]
+
+        dat_subh = low_highpass_filter(x1, peakStim-2, peakStim+2) 
+
+        #Peaks
+        i_peaks, props = scipy.signal.find_peaks(dat_subh, distance=2)
+
+        #plt.plot(dat_subh, alpha=.3,)
+        #plt.scatter(i_peaks, dat_subh[i_peaks], s=30,
+        #    color='orange', alpha=.5)
+
+
+        #Interpeaks 
+        ipi_total = np.diff(i_peaks)
+
+        #Intrapeaks Interval Variation
+        window_samp = 60
+        ipi_var = [np.std(ipi_total[i:i + window_samp])
+                for i in np.arange(0, len(ipi_total) - window_samp)]
+
+        stim_vec_for_ipi = stim_vec[i_peaks[:-1] + 1]
+
+        ##### PLOT IT #####
+        fig, ax = plt.subplots(figsize = (18,6))
+        ax.plot(ipi_var)
+
+        ax1 = ax.twinx()
+        ax1.plot(stim_vec_for_ipi/10, color = 'orange')
+
+        yticks = ax1.get_yticks()
+        yticklabels = [np.round(tick * 10, decimals = 2) for tick in yticks]
+        ax1.set_yticklabels(yticklabels)
+
+        ax.set_xlabel('Time [samples]')
+        ax.set_ylabel('Intrapeak Interval Variation')
+        ax1.set_ylabel('Amplitude [mA]')
+
+        ax.set_title(str(subID))
+
+        ipiVar_npy = np.array([ipi_var, stim_vec_for_ipi])
+
+        if SAVE == 1:
+                plt.savefig(os.path.join(
+                        resutls_path,
+                        f'{subID}_IntraTapVar'
+                        ), dpi = 200)
+
+
+                np.save(os.path.join(resutls_path, f'{subID}_Peaks.npy'), i_peaks)
+                np.save(os.path.join(resutls_path, f'{subID}_IPI.npy'), ipi_total)
+                np.save(os.path.join(resutls_path, f'{subID}_IPI_Var.npy'), ipiVar_npy)
+
+        return i_peaks, ipi_total, ipiVar_npy
