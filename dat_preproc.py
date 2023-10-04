@@ -207,7 +207,8 @@ def mypower(ps):
 
 def peak_function(raw, subID, SIDE, peakStim, resutls_path, figs_path, SAVE):
 
-        x = raw.get_data() 
+        x = raw.get_data(reject_by_annotation = 'omit')
+        
 
         if SIDE == 0:
                 STIM = 4
@@ -218,10 +219,9 @@ def peak_function(raw, subID, SIDE, peakStim, resutls_path, figs_path, SAVE):
         stim_vec = x[STIM,:]
 
         dat_subh = low_highpass_filter(x1, peakStim-2, peakStim+2) 
-
         #Peaks
         i_peaks, props = scipy.signal.find_peaks(dat_subh, distance=2)
-
+        # Adjust peak indices to account for NaN values
         #plt.plot(dat_subh, alpha=.3,)
         #plt.scatter(i_peaks, dat_subh[i_peaks], s=30,
         #    color='orange', alpha=.5)
@@ -267,4 +267,4 @@ def peak_function(raw, subID, SIDE, peakStim, resutls_path, figs_path, SAVE):
                 np.save(os.path.join(resutls_path, f'{subID}_IPI.npy'), ipi_total)
                 np.save(os.path.join(resutls_path, f'{subID}_IPI_Var.npy'), ipiVar_npy)
 
-        return i_peaks, ipi_total, ipiVar_npy
+        return x, i_peaks, ipi_total, ipiVar_npy
