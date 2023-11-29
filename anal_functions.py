@@ -5,6 +5,8 @@ import dat_preproc
 from scipy.signal import hilbert 
 import pandas as pd
 import os
+from importlib import reload
+reload(dat_preproc)
 
 def anal_signal_transform(raw, path, subID, SIDE, peakMed, peakStim):
     x = raw.get_data() 

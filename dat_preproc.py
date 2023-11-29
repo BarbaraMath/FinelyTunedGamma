@@ -30,8 +30,18 @@ def low_highpass_filter(data, frequency_cutoff_low, frequency_cutoff_high):
         # create the filter
         b, a = scipy.signal.butter(filter_order, (frequency_cutoff_low, frequency_cutoff_high), 
                 btype='bandpass', output='ba', fs=fs)              
-        pass_filtered_dat = scipy.signal.filtfilt(b, a, data) 
-    
+        
+        # Identify NaN values in the data
+        nan_mask = np.isnan(data)
+        # Replace NaN values with zeros before filtering
+        data_no_nans = np.nan_to_num(data)
+
+        # Filter the data without NaNs
+        pass_filtered_dat_no_nans = scipy.signal.filtfilt(b, a, data_no_nans)
+
+        # Apply NaN mask to restore NaNs in the filtered data
+        pass_filtered_dat = np.where(nan_mask, np.nan, pass_filtered_dat_no_nans)
+ 
         return pass_filtered_dat
 
 #B. BANDSTOP FILTER
