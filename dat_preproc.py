@@ -95,9 +95,9 @@ def fft_rawviz(raw, x, win_samp, noverlap):
                 
                 ax2 = axes[kj].twinx() #make right axis linked to the left one
                 if kj == 1:
-                        stim_data = (raw.get_data(picks = stim)[0,:]) #define stim channel
+                        stim_data = (raw.get_data(picks = stim)[0,:]/3) #define stim channel
                 elif kj == 0:
-                        stim_data = (raw.get_data(picks = stim)[0,:])
+                        stim_data = (raw.get_data(picks = stim)[0,:]/3)
                 
                 #Plot LFP data
                 axes[ax_c].specgram(x = x[kj,:], Fs = fs, noverlap = noverlap, cmap = 'viridis',
@@ -106,7 +106,7 @@ def fft_rawviz(raw, x, win_samp, noverlap):
                 axes[ax_c].set_xlim(0,raw.n_times/250)
                 
                 #Plot stim channel on top
-                ax2.plot(raw.times, stim_data, 'white', linewidth = 2.5, linestyle = 'dotted')
+                ax2.plot(raw.times, stim_data, 'white', linewidth = 1, linestyle = '-')
                 ax2.set_yticks(np.arange(0,4.5,0.5))
 
                 #Right y axis label only for second plot to avoid crowd
