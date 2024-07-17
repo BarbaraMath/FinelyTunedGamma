@@ -8,7 +8,9 @@ import os
 from importlib import reload
 reload(dat_preproc)
 
-def anal_signal_transform(raw, path, subID, SIDE, peakMed, peakStim):
+def anal_signal_transform(raw, path, subID, SIDE, peakBeta):
+    
+    #def anal_signal_transform(raw, path, subID, SIDE, peakMed, peakStim):
     x = raw.get_data() 
 
     x1 = x[SIDE,:]
@@ -18,13 +20,21 @@ def anal_signal_transform(raw, path, subID, SIDE, peakMed, peakStim):
     elif SIDE == 1:
         x2 = x[5, :]
 
-    dat_ngam = dat_preproc.low_highpass_filter(x1, peakMed-2, peakMed+2) 
-    dat_subh = dat_preproc.low_highpass_filter(x1, peakStim-2, peakStim+2) 
-    dat_inb = dat_preproc.low_highpass_filter(x1, peakStim+3, peakMed-3) 
+    #dat_ngam = dat_preproc.low_highpass_filter(x1, peakMed-2, peakMed+2) 
+    #dat_subh = dat_preproc.low_highpass_filter(x1, peakStim-2, peakStim+2) 
+    #dat_inb = dat_preproc.low_highpass_filter(x1, peakStim+3, peakMed-3) 
+    
+    dat_LowBeta = dat_preproc.low_highpass_filter(x1, 13, 20) 
+    dat_Highbeta = dat_preproc.low_highpass_filter(x1, 20, 35) 
+    dat_Peakbeta = dat_preproc.low_highpass_filter(x1, peakBeta-2, peakBeta+2) 
+    dat_Beta = dat_preproc.low_highpass_filter(x1, 13, 35) 
 
-    datall = [dat_ngam, dat_subh, dat_inb] 
-    labels = ['Peak'+str(peakMed)+'Hz','Peak'+str(peakStim)+'Hz', str(peakStim+3) + '-' + str(peakMed-3)+'Hz']
-
+    #datall = [dat_ngam, dat_subh, dat_inb] 
+    #labels = ['Peak'+str(peakMed)+'Hz','Peak'+str(peakStim)+'Hz', str(peakStim+3) + '-' + str(peakMed-3)+'Hz']
+    
+    datall = [dat_LowBeta, dat_Highbeta, dat_Peakbeta, dat_Beta]
+    labels = ['LowBeta','HighBeta','BetaPeak','Beta']
+    
     tstamps_sec = (1 / raw.info['sfreq']) * np.arange(raw.n_times)
 
     ### HILBERT TRANSFORMATION ###
@@ -43,9 +53,10 @@ def anal_signal_transform(raw, path, subID, SIDE, peakMed, peakStim):
     ### PLOT IT ###
     fig, ax1 = plt.subplots(figsize = (18,6))
     ax2 = ax1.twinx()
-    for idx, dat in enumerate(all_signal_np):
-        ax1.plot(tstamps_sec, all_signal_np[idx,:], label = labels[idx], lw = 2)
+    '''for idx, dat in enumerate(all_signal_np):
+        ax1.plot(tstamps_sec, all_signal_np[idx,:], label = labels[idx], lw = 2)'''
     
+    ax1.plot(tstamps_sec, all_signal_np[2,:], label = labels[2], lw = 2)
     ax2.plot(tstamps_sec, x2[:], label = 'Stimulation', color = 'grey', ls='--', lw=3, alpha = 0.4)
 
     ax1.set_ylabel('Analytic Signal')
@@ -62,10 +73,11 @@ def anal_signal_transform(raw, path, subID, SIDE, peakMed, peakStim):
     plt.show()
 
     #### MAKE THEM ONE ARRAY ####
-    all_signal_np = np.transpose(np.squeeze(np.array([[all_signal_np[0]], [all_signal_np[1]],[all_signal_np[2]],[x2]])))
+    all_signal_np = np.transpose(np.squeeze(np.array([[all_signal_np[0]], [all_signal_np[1]],[all_signal_np[2]],[all_signal_np[3]], [x2]])))
     #sm_analSignal = np.transpose(np.squeeze(np.array([[sm_signal_np[0]],[sm_stim1]])))
     all_signal_np_df = pd.DataFrame(all_signal_np, 
-        columns = ['Spontan', 'StimOn', 'InBetween', 'StimVec'],
+        #columns = ['Spontan', 'StimOn', 'InBetween', 'StimVec'],
+        columns = ['LowBeta', 'HighBeta', 'PeakBeta', 'Beta', 'StimVec']
         )
 
     #### TRANSFORM THE SIGNAL TO MNE OBJECT ####
@@ -84,9 +96,10 @@ def anal_signal_transform(raw, path, subID, SIDE, peakMed, peakStim):
 
     # Add the new channel to the original Raw object
     raw_anal.add_channels([new_raw_array])
-
+    
+    
     plt.savefig(os.path.join(path, str(subID)+'anal_Signal'),dpi = 300)
-    fif_name = str(subID)+'anal_SignalOnly.fif'
+    fif_name = str(subID)+'BetaAnal_SignalOnly.fif'
     
     raw_anal.save(os.path.join(path, fif_name))
     return raw_anal
