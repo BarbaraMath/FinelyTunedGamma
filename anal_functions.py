@@ -72,12 +72,17 @@ def anal_signal_transform(raw, path, subID, SIDE, peakBeta):
 
     plt.show()
 
+    min_val = np.nanmin(x2)
+    max_val = np.nanmax(x2)
+    stim_norm = np.where(np.isnan(x2), np.nan, ((x2 - min_val) / (max_val - min_val)) * 100)
+
+    
     #### MAKE THEM ONE ARRAY ####
-    all_signal_np = np.transpose(np.squeeze(np.array([[all_signal_np[0]], [all_signal_np[1]],[all_signal_np[2]],[all_signal_np[3]], [x2]])))
+    all_signal_np = np.transpose(np.squeeze(np.array([[all_signal_np[0]], [all_signal_np[1]],[all_signal_np[2]],[all_signal_np[3]], [x2], [stim_norm]])))
     #sm_analSignal = np.transpose(np.squeeze(np.array([[sm_signal_np[0]],[sm_stim1]])))
     all_signal_np_df = pd.DataFrame(all_signal_np, 
         #columns = ['Spontan', 'StimOn', 'InBetween', 'StimVec'],
-        columns = ['LowBeta', 'HighBeta', 'PeakBeta', 'Beta', 'StimVec']
+        columns = ['LowBeta', 'HighBeta', 'PeakBeta', 'Beta', 'StimVec', 'StimNormalized']
         )
 
     #### TRANSFORM THE SIGNAL TO MNE OBJECT ####
