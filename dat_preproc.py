@@ -70,7 +70,7 @@ def bandstop_filter(lowcut, highcut, data):
         return stop_filtered_dat
 
 #FFT Transformation and Spectrogram Plotting
-def fft_rawviz(raw, x, win_samp, noverlap):
+def fft_rawviz(raw, x, win_samp, noverlap, SUBID):
         """
         fft_rawviz performs a Fast Fourier Transformation to data and creates TF plots 
         with stimulation amplitude on top
@@ -80,33 +80,33 @@ def fft_rawviz(raw, x, win_samp, noverlap):
         #win_samp = window for fft in samples, e.g. 250 for 1 sec
         #noverlap e.g. 0.25 (for 25%)
         """
-
+        plt.rcParams.update({'font.size': 14})
         fs = raw.info['sfreq']
         window = hann(win_samp, sym=False)
         f, t, Sxx = scipy.signal.spectrogram(x = x, fs = fs, window = window, noverlap = noverlap)
          
         #Plot Spectrograms of both STNs
-        fig, axes = plt.subplots(1,2, figsize = (18,6))
-        fig.suptitle('FFT Transformations')
+        fig, axes = plt.subplots(1,2, figsize = (19,8)) #18,6 without the colorbar
+        fig.suptitle(f'{SUBID}')
 
         ax_c = 0
         stim = 4
+        
         for kj in np.array([0,1]):
                 
                 ax2 = axes[kj].twinx() #make right axis linked to the left one
                 if kj == 1:
-                        stim_data = (raw.get_data(picks = stim)[0,:]/2) #define stim channel
+                        stim_data = (raw.get_data(picks = stim)[0,:]) #define stim channel
                 elif kj == 0:
-                        stim_data = (raw.get_data(picks = stim)[0,:]/2)
+                        stim_data = (raw.get_data(picks = stim)[0,:])
                 
                 #Plot LFP data
-                axes[ax_c].specgram(x = x[kj,:], Fs = fs, noverlap = noverlap, cmap = 'viridis',
+                Pxx, freqs, bins, im = axes[ax_c].specgram(x = x[kj,:], Fs = fs, noverlap = noverlap, cmap = 'viridis',
                         vmin = -25, vmax = 10) #-25,10
-                axes[ax_c].set_ylim(bottom = 0,top = 100)
+                axes[ax_c].set_ylim(bottom = 40,top = 100)
                 axes[ax_c].set_xlim(0,raw.n_times/250)
-                
                 #Plot stim channel on top
-                ax2.plot(raw.times, stim_data, 'white', linewidth = 1, linestyle = '-')
+                ax2.plot(raw.times, stim_data, 'white', linewidth = 3, linestyle = ':')
                 ax2.set_yticks(np.arange(0,4.5,0.5))
 
                 #Right y axis label only for second plot to avoid crowd
@@ -119,10 +119,9 @@ def fft_rawviz(raw, x, win_samp, noverlap):
 
                 ax_c += 1
                 stim += 1
+                plt.colorbar(im, ax=axes, orientation='horizontal', fraction=0.046, pad=0.07)
 
-
-        plt.show(block = False)
-
+        
 
         #np.save(new_fname, Sxx)
         return f, t, Sxx
